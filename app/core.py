@@ -17,13 +17,48 @@ from .db import Database
 from .opentodo_client import OpenTodoClient
 
 _UNIT_ALIASES = {
-    "stk": "Stk", "stück": "Stk", "st": "Stk", "x": "Stk", "pcs": "Stk", "pc": "Stk", "piece": "Stk", "pieces": "Stk",
-    "g": "g", "gr": "g", "gramm": "g",
-    "kg": "kg", "kilo": "kg",
-    "ml": "ml",
-    "l": "l", "liter": "l", "ltr": "l",
-    "pck": "Pck", "pk": "Pck", "packung": "Pck", "pack": "Pck", "p": "Pck", "pkg": "Pck", "packs": "Pck", "package": "Pck",
+    "stk": "Stk", "stück": "Stk", "stücke": "Stk", "stücken": "Stk", "st": "Stk", "x": "Stk",
+    "pcs": "Stk", "pc": "Stk", "piece": "Stk", "pieces": "Stk",
+    "g": "g", "gr": "g", "gramm": "g", "gram": "g", "grams": "g",
+    "kg": "kg", "kilo": "kg", "kilos": "kg", "kilogramm": "kg", "kilogram": "kg", "kilograms": "kg",
+    "ml": "ml", "milliliter": "ml", "millilitern": "ml", "milliliters": "ml",
+    "l": "l", "liter": "l", "litern": "l", "ltr": "l", "liters": "l", "litre": "l", "litres": "l",
+    "pck": "Pck", "pk": "Pck", "packung": "Pck", "packungen": "Pck", "pack": "Pck", "packs": "Pck",
+    "p": "Pck", "pkg": "Pck", "package": "Pck", "packages": "Pck",
 }
+
+# Number words as produced by voice input ("zwei Liter Milch").
+_NUM_WORDS = {
+    "ein": 1, "eine": 1, "einen": 1, "einem": 1, "einer": 1, "eins": 1, "zwei": 2, "zwo": 2, "drei": 3,
+    "vier": 4, "fünf": 5, "sechs": 6, "sieben": 7, "acht": 8, "neun": 9, "zehn": 10, "elf": 11, "zwölf": 12,
+    "anderthalb": 1.5, "eineinhalb": 1.5, "zweieinhalb": 2.5, "dreieinhalb": 3.5,
+    "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8,
+    "nine": 9, "ten": 10, "eleven": 11, "twelve": 12, "half": 0.5,
+}
+_HALF_RE = re.compile(r"^(?:(?:ein|eine|einen)\s+)?halb(?:e|er|en|es)?\s+(.+)$", re.I)
+_KOMMA_RE = re.compile(r"^(\S+)\s+(?:komma|point)\s+(\S+)\s+(.+)$", re.I)
+
+
+def _fmt(n: float) -> str:
+    return f"{n:g}"
+
+
+def normalize_number_words(text: str) -> str:
+    """'zwei Liter Milch' -> '2 Liter Milch', 'ein halber Liter Milch' -> '0.5 Liter Milch'."""
+    t = text.strip()
+    m = _KOMMA_RE.match(t)
+    if m and m.group(1).lower() in _NUM_WORDS and m.group(2).lower() in _NUM_WORDS:
+        a, b = _NUM_WORDS[m.group(1).lower()], _NUM_WORDS[m.group(2).lower()]
+        if float(a).is_integer() and float(b).is_integer() and 0 <= b <= 9:
+            return f"{int(a)}.{int(b)} {m.group(3)}"
+    m = _HALF_RE.match(t)
+    if m:
+        return f"0.5 {m.group(1)}"
+    m = re.match(r"^(\S+)\s+(.+)$", t)
+    if m and m.group(1).lower() in _NUM_WORDS:
+        return f"{_fmt(_NUM_WORDS[m.group(1).lower()])} {m.group(2)}"
+    return t
+
 
 _QUICK_RE = re.compile(
     r"""^\s*
@@ -49,6 +84,7 @@ def _norm_unit(u: str | None) -> str | None:
 
 
 def parse_quick(text: str) -> QuickItem:
+    text = normalize_number_words(text)
     m = _QUICK_RE.match(text)
     if not m:
         return QuickItem(text.strip(), None, None)

@@ -371,9 +371,14 @@ async function tick(id, row) {
 }
 
 // ---------------------------------------------------------------- Schnellerfassung
+// Leading quantity as typed or dictated: "2 l ", "zwei Liter ", "ein halber Liter ", "500 g "
+const _NUMW = "ein|eine|einen|einem|einer|zwei|zwo|drei|vier|fünf|sechs|sieben|acht|neun|zehn|elf|zwölf|anderthalb|eineinhalb|zweieinhalb|dreieinhalb|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|half";
+const _UNITW = "liter|litern|liters|litre|litres|l|ml|milliliter|g|gramm|gram|grams|kg|kilo|kilos|kilogramm|kilogram|stk|stück|stücke|pcs|pc|pieces|pck|packung|packungen|pack|packs|pkg";
+const QTY_PREFIX_CAP = new RegExp("^((?:[\\d.,]+\\s*[a-zäöü]*)|(?:(?:ein|eine|einen)\\s+)?halb\\w*\\s+(?:" + _UNITW + ")|(?:" + _NUMW + ")(?:\\s+(?:komma|point)\\s+(?:" + _NUMW + "))?(?:\\s+(?:" + _UNITW + "))?)\\s+", "i");
+const QTY_PREFIX = QTY_PREFIX_CAP;
 const input = $("#addInput"), suggest = $("#suggest");
 input.addEventListener("input", () => {
-  const txt = input.value.trim().toLowerCase().replace(/^[\d.,]+\s*[a-zäöü]*\s+/i, "");
+  const txt = input.value.trim().toLowerCase().replace(QTY_PREFIX, "");
   if (txt.length < 1) { suggest.classList.remove("show"); return; }
   const hits = state.stammItems.filter(i => i.name.toLowerCase().includes(txt) || (i.aliases || []).some(a => a.toLowerCase().includes(txt))).slice(0, 5);
   if (!hits.length) { suggest.classList.remove("show"); return; }
@@ -381,7 +386,7 @@ input.addEventListener("input", () => {
   suggest.classList.add("show");
   suggest.querySelectorAll("button").forEach(b => b.addEventListener("pointerdown", ev => {
     ev.preventDefault();                       // Fokus bleibt im Feld, kein blur vor dem Tipp
-    const m = input.value.match(/^([\d.,]+\s*[a-zäöü]*)\s+/i);
+    const m = input.value.match(QTY_PREFIX_CAP);
     const text = (m ? m[1] + " " : "") + b.dataset.name;
     suggest.classList.remove("show"); input.value = "";
     submitText(text);

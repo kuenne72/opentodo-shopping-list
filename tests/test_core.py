@@ -163,3 +163,27 @@ def test_store_assignment_in_service(env):
     assert [r["stores"] for r in sl.view() if r["title"] == "Milch"] == [["Supermarkt"]]
     sl.add("Milch", store="Baumarkt")          # Merge ergänzt den zweiten Laden
     assert sorted(next(r["stores"] for r in sl.view() if r["title"] == "Milch")) == ["Baumarkt", "Supermarkt"]
+
+
+@pytest.mark.parametrize(
+    "text,name,qty,unit",
+    [
+        ("2 Liter Milch", "Milch", 2, "l"),
+        ("2 Litern Milch", "Milch", 2, "l"),
+        ("zwei Liter Milch", "Milch", 2, "l"),
+        ("Ein Liter Milch", "Milch", 1, "l"),
+        ("ein halber Liter Milch", "Milch", 0.5, "l"),
+        ("anderthalb Liter Milch", "Milch", 1.5, "l"),
+        ("zwei Komma fünf Liter Milch", "Milch", 2.5, "l"),
+        ("500 Gramm Hackfleisch", "Hackfleisch", 500, "g"),
+        ("1 Kilo Äpfel", "Äpfel", 1, "kg"),
+        ("zehn Eier", "Eier", 10, None),
+        ("drei Stück Zitronen", "Zitronen", 3, "Stk"),
+        ("2 Packungen Nudeln", "Nudeln", 2, "Pck"),
+        ("two litres milk", "milk", 2, "l"),
+        ("Eis", "Eis", None, None),
+    ],
+)
+def test_parse_quick_spoken(text, name, qty, unit):
+    q = parse_quick(text)
+    assert (q.name, q.qty, q.unit) == (name, qty, unit)
