@@ -1,0 +1,238 @@
+name;section;unit;qty;aliases
+Apples;Produce;kg;1;Apple
+Bananas;Produce;Stk;6;Banana
+Pears;Produce;kg;1;
+Grapes;Produce;g;500;
+Strawberries;Produce;g;500;
+Raspberries;Produce;g;250;
+Blueberries;Produce;g;250;
+Oranges;Produce;kg;1;
+Mandarins;Produce;kg;1;Clementines,Tangerines
+Lemons;Produce;Stk;3;Lemon
+Limes;Produce;Stk;2;Lime
+Kiwi;Produce;Stk;4;Kiwifruit
+Mango;Produce;Stk;1;
+Pineapple;Produce;Stk;1;
+Melon;Produce;Stk;1;Watermelon
+Peaches;Produce;kg;1;Nectarines
+Plums;Produce;kg;1;
+Cherries;Produce;g;500;
+Avocado;Produce;Stk;2;
+Tomatoes;Produce;kg;1;Tomato
+Cherry tomatoes;Produce;g;250;
+Cucumber;Produce;Stk;1;
+Bell peppers;Produce;Stk;3;Peppers,Capsicum
+Zucchini;Produce;Stk;2;Courgette
+Eggplant;Produce;Stk;1;Aubergine
+Broccoli;Produce;Stk;1;
+Cauliflower;Produce;Stk;1;
+Carrots;Produce;kg;1;Carrot
+Potatoes;Produce;kg;2;Potato
+Sweet potatoes;Produce;kg;1;
+Onions;Produce;kg;1;Onion
+Red onions;Produce;Stk;3;
+Spring onions;Produce;Stk;1;Scallions,Green onions
+Garlic;Produce;Stk;1;
+Ginger;Produce;Stk;1;
+Leek;Produce;Stk;1;
+Celery;Produce;Stk;1;
+Fennel;Produce;Stk;1;
+Kohlrabi;Produce;Stk;1;
+White cabbage;Produce;Stk;1;Cabbage
+Red cabbage;Produce;Stk;1;
+Savoy cabbage;Produce;Stk;1;
+Spinach;Produce;g;300;
+Lettuce;Produce;Stk;1;
+Arugula;Produce;g;100;Rocket
+Lamb's lettuce;Produce;g;150;Corn salad
+Iceberg lettuce;Produce;Stk;1;
+Mushrooms;Produce;g;250;Champignons
+Asparagus;Produce;g;500;
+Pumpkin;Produce;Stk;1;Squash
+Radishes;Produce;Stk;1;
+Beetroot;Produce;Stk;2;Beets
+Parsley;Produce;Stk;1;
+Basil;Produce;Stk;1;
+Chives;Produce;Stk;1;
+Dill;Produce;Stk;1;
+Cilantro;Produce;Stk;1;Coriander
+Bread;Bakery;Stk;1;
+Whole grain bread;Bakery;Stk;1;Wholemeal bread
+Sliced bread;Bakery;Pck;1;Toast
+Bread rolls;Bakery;Stk;6;Rolls,Buns
+Baguette;Bakery;Stk;1;
+Pretzels;Bakery;Stk;4;
+Croissants;Bakery;Stk;2;
+Crispbread;Bakery;Pck;1;
+Rusks;Bakery;Pck;1;
+Tortillas;Bakery;Pck;1;Wraps
+Cake;Bakery;Stk;1;
+Milk;Dairy & Chilled;l;1;Whole milk
+Oat milk;Dairy & Chilled;l;1;Oat drink
+Butter;Dairy & Chilled;g;250;
+Margarine;Dairy & Chilled;Pck;1;
+Yogurt;Dairy & Chilled;Stk;4;Yoghurt
+Plain yogurt;Dairy & Chilled;g;500;Natural yogurt
+Quark;Dairy & Chilled;g;500;
+Skyr;Dairy & Chilled;g;500;
+Cream;Dairy & Chilled;ml;200;Whipping cream
+Sour cream;Dairy & Chilled;g;200;
+Crème fraîche;Dairy & Chilled;g;150;Creme fraiche
+Cream cheese;Dairy & Chilled;g;200;
+Cheese;Dairy & Chilled;g;200;
+Gouda;Dairy & Chilled;g;200;
+Emmental;Dairy & Chilled;g;200;Swiss cheese
+Mountain cheese;Dairy & Chilled;g;200;
+Parmesan;Dairy & Chilled;g;100;
+Mozzarella;Dairy & Chilled;Stk;2;
+Feta;Dairy & Chilled;g;200;
+Camembert;Dairy & Chilled;Stk;1;
+Cottage cheese;Dairy & Chilled;g;200;
+Eggs;Dairy & Chilled;Stk;10;Egg
+Tofu;Dairy & Chilled;g;200;
+Cold cuts;Dairy & Chilled;g;200;Sliced meat
+Ham;Dairy & Chilled;g;150;
+Salami;Dairy & Chilled;g;100;
+Liver sausage;Dairy & Chilled;g;150;Liverwurst
+White sausages;Dairy & Chilled;Stk;4;Weisswurst
+Frankfurters;Dairy & Chilled;Pck;1;Hot dogs
+Meat salad;Dairy & Chilled;g;200;
+Orange juice chilled;Dairy & Chilled;l;1;
+Pudding;Dairy & Chilled;Stk;4;
+Pizza dough;Dairy & Chilled;Stk;1;
+Puff pastry;Dairy & Chilled;Stk;1;
+Minced meat;Meat & Fish;g;500;Ground meat
+Ground beef;Meat & Fish;g;500;
+Chicken breast;Meat & Fish;g;500;
+Chicken legs;Meat & Fish;Stk;4;Drumsticks
+Turkey breast;Meat & Fish;g;500;
+Schnitzel;Meat & Fish;Stk;4;Cutlet
+Roast pork;Meat & Fish;kg;1;
+Beef steak;Meat & Fish;Stk;2;Steak
+Goulash meat;Meat & Fish;g;500;Stew meat
+Bratwurst;Meat & Fish;Stk;4;Sausages
+Bacon;Meat & Fish;g;150;
+Salmon fillet;Meat & Fish;g;400;Salmon
+Trout;Meat & Fish;Stk;2;
+Shrimp;Meat & Fish;g;250;Prawns
+Fish fingers;Meat & Fish;Pck;1;Fish sticks
+Smoked salmon;Meat & Fish;g;100;
+Pasta;Pantry;g;500;Noodles
+Spaghetti;Pantry;g;500;
+Penne;Pantry;g;500;
+Rice;Pantry;kg;1;
+Basmati rice;Pantry;g;500;
+Risotto rice;Pantry;g;500;
+Couscous;Pantry;g;500;
+Bulgur;Pantry;g;500;
+Quinoa;Pantry;g;500;
+Lentils;Pantry;g;500;
+Chickpeas;Pantry;Stk;2;
+Kidney beans;Pantry;Stk;2;
+Flour;Pantry;kg;1;
+Sugar;Pantry;kg;1;
+Powdered sugar;Pantry;g;250;Icing sugar
+Salt;Pantry;Pck;1;
+Pepper;Pantry;Pck;1;
+Paprika powder;Pantry;Pck;1;
+Curry powder;Pantry;Pck;1;
+Baking powder;Pantry;Pck;1;
+Vanilla sugar;Pantry;Pck;1;
+Yeast;Pantry;Pck;2;
+Rolled oats;Pantry;g;500;Oats,Porridge oats
+Muesli;Pantry;g;750;Granola
+Cornflakes;Pantry;Pck;1;Cereal
+Honey;Pantry;Stk;1;
+Jam;Pantry;Stk;1;Marmalade
+Chocolate spread;Pantry;Stk;1;Nutella
+Peanut butter;Pantry;Stk;1;
+Olive oil;Pantry;l;1;
+Rapeseed oil;Pantry;l;1;Sunflower oil,Canola oil
+Vinegar;Pantry;Stk;1;Balsamic
+Mustard;Pantry;Stk;1;
+Ketchup;Pantry;Stk;1;
+Mayonnaise;Pantry;Stk;1;Mayo
+Soy sauce;Pantry;Stk;1;
+Passata;Pantry;Stk;2;Strained tomatoes
+Tomato paste;Pantry;Stk;1;
+Chopped tomatoes;Pantry;Stk;2;Canned tomatoes
+Coconut milk;Pantry;Stk;2;
+Sweetcorn;Pantry;Stk;2;Corn
+Tuna;Pantry;Stk;2;
+Vegetable stock;Pantry;Stk;1;Broth,Bouillon
+Nuts;Pantry;g;200;
+Almonds;Pantry;g;200;
+Walnuts;Pantry;g;200;
+Raisins;Pantry;g;250;
+Crisps;Pantry;Pck;1;Chips
+Pretzel sticks;Pantry;Pck;1;
+Chocolate;Pantry;Stk;2;
+Biscuits;Pantry;Pck;1;Cookies
+Gummy bears;Pantry;Pck;1;
+Coffee;Pantry;Pck;1;Coffee beans
+Tea;Pantry;Pck;1;
+Cocoa;Pantry;Pck;1;
+Frozen pizza;Pantry;Stk;2;Pizza
+French fries;Pantry;Pck;1;Fries
+Frozen vegetables;Pantry;Pck;1;
+Frozen peas;Pantry;Pck;1;Peas
+Ice cream;Pantry;Stk;1;
+Sparkling water;Drinks;Stk;6;Mineral water,Water
+Still water;Drinks;Stk;6;
+Apple juice;Drinks;l;1;
+Orange juice;Drinks;l;1;OJ
+Cola;Drinks;l;1;
+Lemonade;Drinks;l;1;Soda
+Beer;Drinks;Stk;6;
+Wheat beer;Drinks;Stk;6;
+Shandy;Drinks;Stk;6;Radler
+White wine;Drinks;Stk;1;
+Red wine;Drinks;Stk;1;
+Sparkling wine;Drinks;Stk;1;Prosecco
+Iced tea;Drinks;l;1;
+Oat milk long-life;Drinks;l;1;
+UHT milk;Drinks;l;1;Long-life milk
+Toothpaste;Household & Drugstore;Stk;1;
+Toothbrush;Household & Drugstore;Stk;1;
+Shower gel;Household & Drugstore;Stk;1;Body wash
+Shampoo;Household & Drugstore;Stk;1;
+Conditioner;Household & Drugstore;Stk;1;
+Soap;Household & Drugstore;Stk;1;Hand soap
+Deodorant;Household & Drugstore;Stk;1;Deo
+Shaving foam;Household & Drugstore;Stk;1;
+Razor blades;Household & Drugstore;Pck;1;
+Body lotion;Household & Drugstore;Stk;1;Cream
+Sunscreen;Household & Drugstore;Stk;1;
+Tissues;Household & Drugstore;Pck;1;Kleenex
+Toilet paper;Household & Drugstore;Pck;1;
+Kitchen roll;Household & Drugstore;Pck;1;Paper towels
+Cotton pads;Household & Drugstore;Pck;1;
+Cotton buds;Household & Drugstore;Pck;1;Q-tips
+Plasters;Household & Drugstore;Pck;1;Band-aids
+Dish soap;Household & Drugstore;Stk;1;Washing-up liquid
+Dishwasher tabs;Household & Drugstore;Pck;1;
+Rinse aid;Household & Drugstore;Stk;1;
+Dishwasher salt;Household & Drugstore;Pck;1;
+Laundry detergent;Household & Drugstore;Pck;1;
+Fabric softener;Household & Drugstore;Stk;1;
+All-purpose cleaner;Household & Drugstore;Stk;1;
+Glass cleaner;Household & Drugstore;Stk;1;
+Bathroom cleaner;Household & Drugstore;Stk;1;
+Toilet cleaner;Household & Drugstore;Stk;1;
+Sponges;Household & Drugstore;Pck;1;
+Trash bags;Household & Drugstore;Pck;1;Bin bags
+Freezer bags;Household & Drugstore;Pck;1;
+Cling film;Household & Drugstore;Stk;1;Plastic wrap
+Aluminium foil;Household & Drugstore;Stk;1;Tin foil
+Baking paper;Household & Drugstore;Stk;1;Parchment paper
+Candles;Other;Pck;1;Tea lights
+Batteries;Other;Pck;1;
+Light bulb;Other;Stk;1;LED lamp
+Matches;Other;Pck;1;
+Flowers;Other;Stk;1;
+Potting soil;Other;Stk;1;
+Cat food;Other;Pck;1;
+Dog food;Other;Pck;1;
+Cat litter;Other;Pck;1;
+Wrapping paper;Other;Stk;1;
+Newspaper;Other;Stk;1;

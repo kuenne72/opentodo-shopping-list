@@ -1,0 +1,707 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#0E5A3A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Einkauf">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/static/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/static/icon-180.png">
+<title>Einkauf</title>
+<style>
+:root{
+  --c-obst:#2E8B3D; --c-brot:#A8702A; --c-kuehl:#2577B8; --c-fleisch:#C0453A; --c-trocken:#8A6D3B; --c-getr:#1F8E9A; --c-drog:#7B5CB8; --c-sonst:#6B7471; --c-pink:#C2457F; --c-orange:#D97B22;
+  --bg:#F1F3F2; --card:#FFFFFF; --ink:#1C201F; --mute:#6B7471; --line:#D9DEDC;
+  --green:#0E5A3A; --green-soft:#DCEBE3; --ochre:#B8781A; --ochre-soft:#F5E8D0;
+  --danger:#A63A2B; --radius:14px; --tap:56px;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --c-obst:#5CC46C; --c-brot:#D9A24F; --c-kuehl:#5FA8E8; --c-fleisch:#EE7A6E; --c-trocken:#C9A86A; --c-getr:#4FC0CC; --c-drog:#A98BE8; --c-sonst:#98A39F; --c-pink:#F07AB0; --c-orange:#F0A05A;
+  --bg:#141817; --card:#1E2422; --ink:#ECEFEE; --mute:#98A39F; --line:#2E3634;
+  --green:#4FB383; --green-soft:#1C3A2C; --ochre:#E0A24A; --ochre-soft:#3B2E17; --danger:#E2715F;
+}}
+:root[data-theme="dark"]{
+  --c-obst:#5CC46C; --c-brot:#D9A24F; --c-kuehl:#5FA8E8; --c-fleisch:#EE7A6E; --c-trocken:#C9A86A; --c-getr:#4FC0CC; --c-drog:#A98BE8; --c-sonst:#98A39F; --c-pink:#F07AB0; --c-orange:#F0A05A;
+  --bg:#141817; --card:#1E2422; --ink:#ECEFEE; --mute:#98A39F; --line:#2E3634;
+  --green:#4FB383; --green-soft:#1C3A2C; --ochre:#E0A24A; --ochre-soft:#3B2E17; --danger:#E2715F;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:17px;line-height:1.35}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none;padding:0}
+a{color:var(--green)}
+:focus-visible{outline:3px solid var(--ochre);outline-offset:2px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+
+/* Rahmen */
+#app{max-width:720px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column}
+header{position:sticky;top:0;z-index:5;background:var(--bg);padding:max(10px,env(safe-area-inset-top)) 16px 8px}
+.topline{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.topline h1{font-size:22px;margin:0;font-weight:700;letter-spacing:-.01em}
+.who{color:var(--mute);font-size:15px;min-height:36px;padding:0 10px;border-radius:999px;border:1px solid var(--line)}
+.who.theme{width:36px;padding:0;display:grid;place-items:center}
+.who.theme svg{width:18px;height:18px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.stores{display:flex;gap:8px;overflow-x:auto;padding:10px 0 2px;scrollbar-width:none}
+.stores::-webkit-scrollbar{display:none}
+.pill{flex:0 0 auto;min-height:40px;padding:0 16px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);font-weight:700;font-size:16px}
+.pill[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:#fff}
+main{flex:1;padding:4px 16px calc(150px + env(safe-area-inset-bottom))}
+.view{display:none}.view.active{display:block}
+
+/* Liste */
+.section{margin:18px 0 6px;position:sticky;top:112px;z-index:3;background:var(--bg);padding:6px 0;display:flex;align-items:baseline;gap:8px}
+.section h2{font-size:15px;margin:0;color:var(--sec,var(--mute));font-weight:700}
+.section .ico{width:20px;height:20px;stroke:var(--sec,var(--mute));stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round;align-self:center}
+.section .n{color:var(--mute);font-size:14px}
+.row{display:flex;align-items:center;gap:12px;min-height:var(--tap);background:var(--card);border-radius:var(--radius);padding:6px 8px 6px 6px;margin-bottom:8px;border:1px solid transparent}
+.row.done{opacity:.45}
+.tick{flex:0 0 46px;height:46px;border-radius:50%;border:2px solid var(--sec,var(--green));display:grid;place-items:center;background:color-mix(in srgb,var(--sec,var(--green)) 12%,transparent);transition:background .12s}
+.tick svg{position:absolute;width:24px;height:24px;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.tick{position:relative}
+.tick svg{width:26px;height:26px}
+.tick .ico{stroke:var(--sec,var(--green));stroke-width:2;opacity:1}
+.tick .chk{stroke:#fff;stroke-width:3;opacity:0}
+.row.done .tick{background:var(--sec,var(--green))}.row.done .tick .ico{opacity:0}.row.done .tick .chk{opacity:1}
+.name{flex:1;text-align:left;font-size:20px;font-weight:400;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row.done .name{text-decoration:line-through}
+.qty{flex:0 0 auto;min-width:64px;min-height:44px;padding:0 12px;border-radius:12px;background:var(--ochre-soft);color:var(--ochre);font-weight:700;font-size:20px;display:flex;align-items:baseline;justify-content:center;gap:3px;letter-spacing:-.01em}
+.qty small{font-size:13px;font-weight:700}
+.qty.empty{background:transparent;color:var(--mute);font-size:15px;font-weight:400}
+.empty-state{padding:48px 12px;text-align:center;color:var(--mute)}
+.empty-state b{display:block;color:var(--ink);font-size:20px;margin-bottom:6px}
+
+/* Schnellerfassung */
+.composer{position:fixed;left:0;right:0;bottom:calc(64px + env(safe-area-inset-bottom));z-index:6;padding:8px 16px;background:linear-gradient(to top,var(--bg) 70%,transparent)}
+.composer .inner{max-width:720px;margin:0 auto;position:relative}
+.composer form{display:flex;gap:8px}
+.composer input{flex:1;min-width:0;min-height:52px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);padding:0 18px;font-size:18px}
+.composer input::placeholder{color:var(--mute)}
+.composer button{flex:0 0 52px;height:52px;border-radius:50%;background:var(--green);color:#fff;font-size:28px;line-height:1}
+.composer .catbtn{background:var(--card);border:1.5px solid var(--line);color:var(--ink)}
+.composer .catbtn svg{width:24px;height:24px;stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round}
+.cat-tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -16px 12px;padding:0 16px}
+.cat-tabs button{flex:0 0 auto;padding:8px 14px;border-radius:999px;background:var(--bg);border:1px solid var(--line);font-weight:700;font-size:15px}
+.cat-tabs button[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips button{min-height:44px;padding:0 14px;border-radius:12px;background:var(--bg);border:1px solid var(--line);font-size:17px;display:flex;align-items:center;gap:6px}
+.chips button small{color:var(--mute);font-size:13px}
+.chips button.on{background:var(--green-soft);border-color:var(--green);color:var(--green)}
+.cat-search{width:100%;min-height:46px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);padding:0 12px;font-size:17px;margin-bottom:12px}
+.group{margin:14px 0 6px;font-size:15px;color:var(--mute);font-weight:700}
+.group .ico{width:18px;height:18px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.chips button .ico{width:22px;height:22px;stroke:currentColor;stroke-width:2;fill:none}
+.suggest{position:absolute;left:0;right:60px;bottom:60px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.12);display:none}
+.suggest.show{display:block}
+.suggest button{display:flex;justify-content:space-between;width:100%;text-align:left;padding:12px 16px;min-height:48px;border-top:1px solid var(--line);font-size:17px}
+.suggest button:first-child{border-top:0}
+.suggest small{color:var(--mute)}
+
+/* Tabs */
+nav{position:fixed;left:0;right:0;bottom:0;z-index:7;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+nav .inner{max-width:720px;margin:0 auto;display:flex}
+nav button{flex:1;min-height:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--mute);font-size:13px;font-weight:700}
+nav button[aria-current="page"]{color:var(--green)}
+nav svg{width:24px;height:24px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+/* Zuletzt */
+.recent{display:flex;align-items:center;gap:12px;min-height:52px;background:var(--card);border-radius:var(--radius);padding:6px 8px 6px 14px;margin-bottom:8px}
+.recent .name{font-size:18px}
+.recent time{color:var(--mute);font-size:14px}
+.recent .add{flex:0 0 44px;height:44px;border-radius:50%;background:var(--green-soft);color:var(--green);font-size:26px;font-weight:700}
+
+/* Stammdaten */
+.subtabs{display:flex;gap:6px;margin:6px 0 14px;overflow-x:auto;scrollbar-width:none}
+.subtabs button{padding:8px 14px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-weight:700;font-size:15px;flex:0 0 auto}
+.subtabs button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.card{background:var(--card);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px}
+.card h3{margin:0 0 4px;font-size:18px}
+.card .meta{color:var(--mute);font-size:15px}
+.card .actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.btn{min-height:40px;padding:0 14px;border-radius:10px;background:var(--green-soft);color:var(--green);font-weight:700;font-size:15px}
+.btn.primary{background:var(--green);color:#fff}
+.btn.quiet{background:transparent;border:1px solid var(--line);color:var(--ink)}
+.btn.danger{background:transparent;color:var(--danger)}
+.field{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+.field label{font-size:14px;color:var(--mute)}
+.field input,.field select{min-height:46px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);padding:0 12px;font-size:17px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.order{list-style:none;margin:0;padding:0}
+.order li{display:flex;align-items:center;gap:8px;min-height:44px;border-bottom:1px solid var(--line)}
+.order li span{flex:1}
+.order li button{width:40px;height:40px;border-radius:8px;background:var(--bg);font-size:18px}
+
+/* Sheet */
+.sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:20;display:none;align-items:flex-end;justify-content:center}
+.sheet-bg.show{display:flex}
+.sheet{width:100%;max-width:720px;background:var(--card);border-radius:20px 20px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom));max-height:88dvh;overflow:auto}
+.sheet h2{margin:0 0 12px;font-size:20px}
+.sheet .persons{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.sheet .persons button{min-height:64px;border-radius:var(--radius);background:var(--bg);font-size:19px;font-weight:700}
+.sheet .persons button[aria-pressed="true"]{background:var(--green);color:#fff}
+.qtyedit{display:flex;gap:10px;align-items:center;margin:8px 0 14px}
+.qtyedit input{flex:1;min-width:0;min-height:56px;font-size:28px;text-align:center;border-radius:12px;border:1.5px solid var(--line);background:var(--bg)}
+.qtyedit select{flex:0 0 110px;min-height:56px;font-size:20px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);padding:0 10px}
+.steps{display:flex;gap:8px;margin-bottom:14px}
+.steps button{flex:1;min-height:48px;border-radius:12px;background:var(--bg);font-size:20px;font-weight:700}
+
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(140px + env(safe-area-inset-bottom));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:15px;z-index:30;opacity:0;transition:opacity .15s;pointer-events:none}
+.toast.show{opacity:1}
+.offline{background:var(--ochre-soft);color:var(--ochre);text-align:center;font-size:14px;padding:4px;border-radius:8px;margin-top:6px;display:none}
+.offline.show{display:block}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="topline">
+      <h1 id="title" data-i18n="app.title">Einkauf</h1>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="who theme" id="langBtn" data-i18n-attr="title:lang.title" style="font-size:14px;font-weight:700"></button>
+        <button class="who theme" id="themeBtn" data-i18n-attr="title:theme.title;aria-label:theme.aria"></button>
+        <button class="who" id="whoBtn" data-i18n-attr="title:who.title">…</button>
+      </div>
+    </div>
+    <div class="stores" id="stores"></div>
+    <div class="offline" id="offline" data-i18n="offline"></div>
+  </header>
+
+  <main>
+    <section class="view active" id="view-list"></section>
+    <section class="view" id="view-recent"></section>
+    <section class="view" id="view-admin">
+      <div class="subtabs" id="subtabs">
+        <button data-sub="items" aria-pressed="true" data-i18n="sub.items"></button>
+        <button data-sub="sections" data-i18n="sub.sections"></button>
+        <button data-sub="stores" data-i18n="sub.stores"></button>
+        <button data-sub="templates" data-i18n="sub.templates"></button>
+        <button data-sub="users" data-i18n="sub.users"></button>
+      </div>
+      <div id="admin-body"></div>
+    </section>
+  </main>
+
+  <div class="composer" id="composer">
+    <div class="inner">
+      <div class="suggest" id="suggest"></div>
+      <form id="addForm" autocomplete="off">
+        <button type="button" id="catBtn" class="catbtn" data-i18n-attr="aria-label:cat.open"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+        <input id="addInput" data-i18n-attr="placeholder:add.placeholder" enterkeyhint="done" inputmode="text">
+        <button type="submit" data-i18n-attr="aria-label:add.aria">+</button>
+      </form>
+    </div>
+  </div>
+
+  <nav>
+    <div class="inner">
+      <button data-view="list" aria-current="page">
+        <svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1.5"/><circle cx="4.5" cy="12" r="1.5"/><circle cx="4.5" cy="18" r="1.5"/></svg><span data-i18n="nav.list"></span></button>
+      <button data-view="recent">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span data-i18n="nav.recent"></span></button>
+      <button data-view="admin">
+        <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h10M4 17h7"/></svg><span data-i18n="nav.admin"></span></button>
+    </div>
+  </nav>
+</div>
+
+<div class="sheet-bg" id="sheetBg"><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast"></div>
+
+<script src="/static/i18n.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmtQty = q => q == null ? "" : (Math.round(q*100)/100).toString().replace(".", LANG === "de" ? "," : ".");
+
+const state = {
+  user: null, store: null, items: [], status: null, view: "list",
+  sub: "items", stammItems: [], stores: [], templates: [], labels: [], recent: [],
+  pending: new Set(), version: 0, es: null,
+};
+try { state.user = localStorage.getItem("einkauf.user"); state.store = localStorage.getItem("einkauf.store") || null; } catch {}
+
+// ---------------------------------------------------------------- API
+async function api(path, opts = {}) {
+  const headers = Object.assign({ "Content-Type": "application/json", "Accept-Language": LANG }, opts.headers || {});
+  if (state.user) headers["X-Einkauf-User"] = state.user;
+  const r = await fetch(path, Object.assign({}, opts, { headers, body: opts.body ? JSON.stringify(opts.body) : undefined }));
+  if (!r.ok) {
+    let msg = r.statusText;
+    try { const j = await r.json(); msg = j.hint || j.detail?.error?.message || j.detail?.error || j.detail || j.error || msg; if (j.status && j.hint) msg = `OpenTodo ${j.status}: ${j.hint}`; if (typeof msg !== "string") msg = JSON.stringify(msg); } catch {}
+    throw new Error(msg);
+  }
+  return r.status === 204 ? null : r.json();
+}
+let toastT;
+function toast(msg) { const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 2200); }
+
+// ---------------------------------------------------------------- Laden
+async function loadStatus() {
+  state.status = await api("/api/status");
+  $("#offline").classList.remove("show");
+  await loadSections();
+}
+async function loadSections() {
+  const r = await api("/api/sections");
+  state.sectionsFull = r.sections; state.iconKeys = r.icons; state.colorKeys = r.colors;
+  for (const k of Object.keys(secMeta)) delete secMeta[k];
+  for (const sec of r.sections) secMeta[sec.name] = sec;
+  state.status.sections = r.sections.map(x => x.name);
+  state.sectionIds = Object.fromEntries(r.sections.map(x => [x.name, x.id]));
+}
+async function loadList() {
+  if (!state.user) return;
+  const q = state.store ? `?laden=${encodeURIComponent(state.store)}` : "";
+  const r = await api("/api/list" + q);
+  state.items = r.items; state.version = r.version;
+  renderList();
+}
+async function loadRecent() { state.recent = await api("/api/history?tage=90"); renderRecent(); }
+async function loadStamm() {
+  [state.stammItems, state.stores, state.templates] = await Promise.all([api("/api/items"), api("/api/stores"), api("/api/templates")]);
+  if (state.user) { try { state.labels = await api("/api/labels"); } catch {} }
+  renderAdmin();
+}
+
+// ---------------------------------------------------------------- Render: Kopf
+function renderStores() {
+  const box = $("#stores");
+  const names = (state.status?.stores || []);
+  box.innerHTML = [`<button class="pill" data-store="" aria-pressed="${!state.store}">${tr("all")}</button>`]
+    .concat(names.map(n => `<button class="pill" data-store="${esc(n)}" aria-pressed="${state.store === n}">${esc(n)}</button>`)).join("");
+  box.querySelectorAll(".pill").forEach(b => b.onclick = () => {
+    state.store = b.dataset.store || null;
+    try { state.store ? localStorage.setItem("einkauf.store", state.store) : localStorage.removeItem("einkauf.store"); } catch {}
+    renderStores(); loadList();
+  });
+  $("#whoBtn").textContent = state.user || tr("who.ask");
+}
+
+
+// ---------------------------------------------------------------- Abschnitts-Symbole
+const ICONS = {
+  apple: '<path d="M12 8.5c-1.2-1.6-3.3-2.2-5.2-1.2C4.3 8.6 3.5 11.7 4.4 14.8 5.3 18 7.5 20.5 9.6 20.5c.9 0 1.6-.6 2.4-.6s1.5.6 2.4.6c2.1 0 4.3-2.5 5.2-5.7.9-3.1.1-6.2-2.4-7.5-1.9-1-4-.4-5.2 1.2z"/><path d="M12 8.5c0-2.2 1.2-3.8 3.2-4.5"/>',
+  bread: '<path d="M4 11c0-2.5 2-4 4-4h8c2 0 4 1.5 4 4 0 1.2-.7 2-1.5 2.4V18a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1v-4.6C4.7 13 4 12.2 4 11z"/><path d="M9 7.5c0 2 2 2 2 4M14 7.5c0 2 2 2 2 4"/>',
+  snow: '<path d="M12 3v18M3 12h18M6 6l12 12M18 6L6 18"/><path d="M12 3l-2.5 2.5M12 3l2.5 2.5M12 21l-2.5-2.5M12 21l2.5-2.5M3 12l2.5-2.5M3 12l2.5 2.5M21 12l-2.5-2.5M21 12l-2.5 2.5"/>',
+  fish: '<path d="M2.5 12c2.5-4 6-6.5 10-6.5 3.2 0 6 1.8 8.5 4.5-2.5 2.7-5.3 4.5-8.5 4.5-4 0-7.5-2.5-10-6.5z" transform="translate(1 0)"/><path d="M21 7.5l-2.5 2.5L21 12.5"/><path d="M3.5 12l-2 -3M3.5 12l-2 3"/><circle cx="16.5" cy="11" r="1" fill="currentColor" stroke="none"/>',
+  jar: '<path d="M8 4h8v2H8zM7 6h10v2a2 2 0 0 1-1 1.7V19a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V9.7A2 2 0 0 1 7 8z"/><path d="M10 13h4M10 16h4"/>',
+  bottle: '<path d="M10 3h4v3l1.5 2.5c.3.5.5 1 .5 1.6V19a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-8.9c0-.6.2-1.1.5-1.6L10 6z"/><path d="M8 13h8"/>',
+  spray: '<path d="M9 9h6l1 11a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1z"/><path d="M11 9V6a1 1 0 0 1 1-1h1V3h3l2 2"/><path d="M10 14h4"/>',
+  tag: '<path d="M3 12V5a2 2 0 0 1 2-2h7l9 9-9 9z"/><circle cx="7.5" cy="7.5" r="1.2" fill="currentColor"/>',
+  leaf: '<path d="M5 19C5 10 10 5 20 4c-1 10-6 15-15 15z"/><path d="M5 19c3-5 6-8 10-10"/>',
+  candy: '<circle cx="12" cy="12" r="4"/><path d="M8 12L3 8v8zM16 12l5-4v8z"/>',
+  box: '<path d="M3 8l9-4 9 4v9l-9 4-9-4z"/><path d="M3 8l9 4 9-4M12 12v9"/>',
+  pet: '<circle cx="12" cy="15" r="4"/><circle cx="6" cy="9" r="1.8"/><circle cx="18" cy="9" r="1.8"/><circle cx="9" cy="5" r="1.8"/><circle cx="15" cy="5" r="1.8"/>',
+  baby: '<circle cx="12" cy="12" r="8"/><path d="M9 10h.01M15 10h.01M9 14c1 1.3 5 1.3 6 0"/>',
+  tools: '<path d="M14 6l4 4-8 8H6v-4zM4 20h16"/>',
+  plant: '<path d="M12 21v-9M12 12c-4 0-7-3-7-7 4 0 7 3 7 7zM12 12c4 0 7-3 7-7-4 0-7 3-7 7z"/><path d="M7 21h10"/>',
+  cart: '<path d="M3 4h2l2.5 11h11l2-7H7"/><circle cx="9" cy="19" r="1.5"/><circle cx="17" cy="19" r="1.5"/>',
+  drumstick: '<path d="M15 9a4 4 0 1 0-5.2 3.8L5 17.6l1.4 1.4 4.8-4.8A4 4 0 0 0 15 9z"/><path d="M5 17.6l-1.6 1.6M6.4 19l-1.6 1.6"/>',
+  steak: '<path d="M4 12c0-4 3-7 8-7s8 2 8 6-3 8-8 8-8-3-8-7z"/><path d="M9 10c0 3 2 5 5 5"/><circle cx="15" cy="9" r="1" fill="currentColor" stroke="none"/>',
+  cheese: '<path d="M3 10l9-6 9 6v8H3z"/><path d="M3 10h18"/><circle cx="8" cy="14" r="1.2"/><circle cx="14" cy="15.5" r="1"/><circle cx="12" cy="12" r=".8"/>',
+  egg: '<path d="M12 3c-3.5 0-7 5.5-7 10a7 7 0 0 0 14 0c0-4.5-3.5-10-7-10z"/>',
+  carrot: '<path d="M20 4l-3 3M17 7c-2-2-5-1-7 1L4 20l12-6c2-2 3-5 1-7z"/><path d="M9 12l3 3M12 9l3 3"/>',
+  broccoli: '<path d="M10 20v-5M14 20v-5"/><path d="M12 15c-4 0-7-2.2-7-5 0-1.8 1.2-3 2.7-3.3C8 4.8 9.8 3.5 12 3.5s4 1.3 4.3 3.2C17.8 7 19 8.2 19 10c0 2.8-3 5-7 5z"/><path d="M9 12.5c1 .7 2 1 3 1s2-.3 3-1"/>',
+  pepper: '<path d="M12 6c-2-1-4.5 0-5.5 2.5C5 12 6.5 20 10 20h4c3.5 0 5-8 3.5-11.5C16.5 6 14 5 12 6z"/><path d="M12 6V3M12 3c1.5 0 3 1 3 2.5"/><path d="M12 7v12"/>',
+  mushroom: '<path d="M4 11c0-4 3.6-7 8-7s8 3 8 7c0 1-1 1.5-2 1.5H6c-1 0-2-.5-2-1.5z"/><path d="M9 12.5V18a3 3 0 0 0 6 0v-5.5"/><circle cx="9" cy="8" r="1"/><circle cx="14" cy="7" r=".8"/>',
+  coffee: '<path d="M5 8h11v6a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4z"/><path d="M16 9h2a2 2 0 0 1 0 4h-2M4 21h14"/>',
+  wine: '<path d="M8 3h8l-1 7a3 3 0 0 1-6 0zM12 13v7M8 20h8"/>',
+  beer: '<path d="M7 7h9v12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2zM16 10h2a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-2"/><path d="M7 7c0-2 1.5-3 3-3s2 1 3 1 2-1 3 1"/>',
+  broom: '<path d="M14 3l-5 9M9 12l-4 2 2 6 7-3 1-4z"/><path d="M5 14l7 3"/>',
+  roll: '<ellipse cx="9" cy="8" rx="4" ry="5"/><path d="M9 3h7c2 0 4 2 4 5s-2 5-4 5H9M20 8v9c0 2-2 4-4 4H9"/><circle cx="9" cy="8" r="1.2"/>',
+  bulb: '<path d="M9 18h6M10 21h4M8 13a5 5 0 1 1 8 0c-1 1-1.5 2-1.5 3h-5c0-1-.5-2-1.5-3z"/>',
+  plug: '<path d="M9 3v5M15 3v5M7 8h10v3a5 5 0 0 1-10 0zM12 16v5"/>',
+  hammer: '<path d="M14 5l5 5-2 2-5-5zM12 7l-9 9 2 2 9-9"/><path d="M14 5l2-2 5 5-2 2"/>',
+  saw: '<path d="M3 8h12l6 4-2 2-5-3H8l-3 3H3z"/><path d="M5 14l2 3M8 14l2 3M11 14l2 3"/>',
+  paint: '<path d="M4 4h12v5H4zM16 6h3v5h-7v3M11 14h2v6h-2z"/>',
+  tap: '<path d="M4 10h10a3 3 0 0 1 3 3v2h-4v-2H4z"/><path d="M9 10V6M6 6h6M4 18c0 1 1 2 2 2s2-1 2-2-2-3-2-3-2 2-2 3z"/>',
+  plank: '<path d="M3 9h18v6H3z"/><path d="M3 12c3-1 6 1 9 0s6-1 9 0"/>',
+  watering: '<path d="M7 9h8v9a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2zM15 11l5-3M9 9V7a3 3 0 0 1 6 0v2"/><path d="M20 8l1-2M20 8l2 1"/>',
+  gift: '<path d="M4 10h16v10H4zM4 7h16v3H4zM12 7v13"/><path d="M12 7c-1-3-5-3-5-1s3 1 5 1zM12 7c1-3 5-3 5-1s-3 1-5 1z"/>',
+  cross: '<path d="M10 4h4v6h6v4h-6v6h-4v-6H4v-4h6z"/>',
+  pencil: '<path d="M4 20l4-1L19 8l-3-3L5 16zM14 7l3 3"/>',
+  car: '<path d="M5 13l2-5h10l2 5v5H5z"/><circle cx="8" cy="18" r="1.5"/><circle cx="16" cy="18" r="1.5"/><path d="M5 13h14"/>',
+};
+const COLOR_VAR = { green: "--c-obst", ochre: "--c-brot", blue: "--c-kuehl", red: "--c-fleisch", brown: "--c-trocken", teal: "--c-getr", violet: "--c-drog", grey: "--c-sonst", pink: "--c-pink", orange: "--c-orange" };
+const secMeta = {};   // name -> {icon, color, id}
+function storeSections() {   // Abschnittsnamen im gewählten Laden (oder alle)
+  const all = state.status?.sections || [];
+  if (!state.store) return all;
+  const st = (state.stores || []).find(x => x.name === state.store);
+  return st && st.order && st.order.length ? st.order.filter(n => all.includes(n)) : all;
+}
+const secStyle = sec => `style="--sec:var(${COLOR_VAR[(secMeta[sec] || {}).color] || "--c-sonst"})"`;
+const iconFor = sec => `<svg class="ico" viewBox="0 0 24 24">${ICONS[(secMeta[sec] || {}).icon] || ICONS.tag}</svg>`;
+const iconSvg = key => `<svg class="ico" viewBox="0 0 24 24">${ICONS[key] || ICONS.tag}</svg>`;
+
+// ---------------------------------------------------------------- Render: Liste
+function renderList() {
+  const v = $("#view-list");
+  if (!state.items.length) {
+    v.innerHTML = `<div class="empty-state"><b>${tr("empty.title")}</b>${tr("empty.hint")}</div>`;
+    return;
+  }
+  let html = "", cur = null;
+  for (const it of state.items) {
+    if (it.section !== cur) { cur = it.section; const n = state.items.filter(x => x.section === cur).length;
+      html += `<div class="section" ${secStyle(cur)}>${iconFor(cur)}<h2>${esc(cur || tr("no.section"))}</h2><span class="n">${n}</span></div>`; }
+    const done = state.pending.has(it.id);
+    const qty = it.qty != null ? `<span class="qty">${fmtQty(it.qty)}<small>${esc(unitLabel(it.unit))}</small></span>` : `<span class="qty empty">${tr("qty")}</span>`;
+    html += `<div class="row${done ? " done" : ""}" data-id="${it.id}" ${secStyle(it.section)}>
+      <button class="tick" aria-label="${tr("tick")}">${iconFor(it.section)}<svg class="chk" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></button>
+      <button class="name" data-act="edit">${esc(it.title)}</button>
+      <button class="qtybtn" data-act="qty" style="all:unset;cursor:pointer">${qty}</button></div>`;
+  }
+  v.innerHTML = html;
+  v.querySelectorAll(".row").forEach(row => {
+    const id = row.dataset.id;
+    row.querySelector(".tick").onclick = () => tick(id, row);
+    row.querySelector("[data-act=qty]").onclick = () => openQty(id);
+    row.querySelector("[data-act=edit]").onclick = () => openQty(id);
+  });
+}
+async function tick(id, row) {
+  row.classList.add("done"); state.pending.add(id);
+  try { await api(`/api/check/${id}`, { method: "POST" }); toast(tr("done")); }
+  catch (e) { row.classList.remove("done"); state.pending.delete(id); toast(tr("tick.fail", { msg: e.message })); }
+  setTimeout(() => { state.pending.delete(id); loadList(); }, 900);
+}
+
+// ---------------------------------------------------------------- Schnellerfassung
+const input = $("#addInput"), suggest = $("#suggest");
+input.addEventListener("input", () => {
+  const txt = input.value.trim().toLowerCase().replace(/^[\d.,]+\s*[a-zäöü]*\s+/i, "");
+  if (txt.length < 1) { suggest.classList.remove("show"); return; }
+  const hits = state.stammItems.filter(i => i.name.toLowerCase().includes(txt) || (i.aliases || []).some(a => a.toLowerCase().includes(txt))).slice(0, 5);
+  if (!hits.length) { suggest.classList.remove("show"); return; }
+  suggest.innerHTML = hits.map(i => `<button type="button" data-name="${esc(i.name)}"><span>${esc(i.name)}</span><small>${i.default_qty != null ? fmtQty(i.default_qty) + " " + unitLabel(i.unit) : ""} ${esc(sectionName(i.section_id))}</small></button>`).join("");
+  suggest.classList.add("show");
+  suggest.querySelectorAll("button").forEach(b => b.addEventListener("pointerdown", ev => {
+    ev.preventDefault();                       // Fokus bleibt im Feld, kein blur vor dem Tipp
+    const m = input.value.match(/^([\d.,]+\s*[a-zäöü]*)\s+/i);
+    const text = (m ? m[1] + " " : "") + b.dataset.name;
+    suggest.classList.remove("show"); input.value = "";
+    submitText(text);
+  }));
+});
+input.addEventListener("blur", () => setTimeout(() => suggest.classList.remove("show"), 200));
+async function submitText(text) {
+  try { const t = await api("/api/add", { method: "POST", body: { text, laden: state.store } }); toast(tr("added", { name: t.title })); await loadList(); await loadStamm(); if (t._new_item) askSection(t); }
+  catch (err) { toast(tr("error", { msg: err.message })); input.value = text; }
+}
+// Neuer Artikel: Abschnitt gleich zuordnen (Stamm + offener Eintrag)
+function askSection(t) {
+  const names = storeSections();
+  const secs = (state.sectionsFull || []).filter(x => names.includes(x.name));
+  openSheet(`<h2>${esc(tr("new.title", { name: t.title }))}</h2><p style="color:var(--mute);margin:0 0 12px">${tr("new.q")}</p>
+    <div class="persons" id="secPick">${secs.map(sec => `<button data-s="${esc(sec.name)}" ${secStyle(sec.name)} style="display:flex;flex-direction:column;gap:4px;align-items:center;color:var(--sec)"><span style="width:26px;height:26px">${iconFor(sec.name)}</span><span style="font-size:15px;color:var(--ink)">${esc(sec.name)}</span></button>`).join("")}</div>
+    <button class="btn quiet" id="secSkip" style="margin-top:12px">${tr("new.skip")}</button>`);
+  $("#secPick").querySelectorAll(".ico").forEach(sv => { sv.style.width = "26px"; sv.style.height = "26px"; sv.style.stroke = "currentColor"; sv.style.strokeWidth = "2"; sv.style.fill = "none"; });
+  $("#secSkip").onclick = closeSheet;
+  $("#secPick").querySelectorAll("button").forEach(b => b.onclick = async () => {
+    closeSheet();
+    const it = state.stammItems.find(i => i.name.toLowerCase() === t.title.toLowerCase());
+    try {
+      await api("/api/items", { method: "POST", body: { name: t.title, aliases: it?.aliases || [], default_qty: it?.default_qty ?? null, unit: it?.unit || null, section: b.dataset.s, move_open: true } });
+      toast(`${t.title} → ${b.dataset.s}`); loadList(); loadStamm();
+    } catch (e) { toast(e.message); }
+  });
+}
+$("#addForm").onsubmit = async e => {
+  e.preventDefault();
+  const text = input.value.trim(); if (!text) return;
+  input.value = ""; suggest.classList.remove("show");
+  submitText(text);
+};
+
+// ---------------------------------------------------------------- Katalog
+let catSec = null;
+function openCatalog() {
+  const open = new Set(state.items.map(i => i.title.toLowerCase()));
+  const groups = storeSections().map(sec => ({ sec, items: state.stammItems.filter(i => sectionName(i.section_id) === sec) })).filter(g => g.items.length);
+  const rest = state.store ? [] : state.stammItems.filter(i => !i.section_id);
+  if (rest.length) groups.push({ sec: tr("no.section"), items: rest });
+  if (!groups.length) {
+    openSheet(`<h2>${tr("cat.title")}</h2><p>${tr("cat.empty")}</p><button class="btn primary" id="seedBtn">${tr("cat.seed")}</button>`);
+    $("#seedBtn").onclick = async () => { try { const r = await api("/api/items/import", { method: "POST", body: { overwrite: false } }); toast(tr("cat.seeded", { n: r.added })); await loadStamm(); openCatalog(); } catch (e) { toast(e.message); } };
+    return;
+  }
+  if (!catSec || !groups.some(g => g.sec === catSec)) catSec = groups[0].sec;
+  const render = (filter = "") => {
+    const f = filter.trim().toLowerCase();
+    const shown = f ? groups.map(g => ({ sec: g.sec, items: g.items.filter(i => i.name.toLowerCase().includes(f) || (i.aliases || []).some(a => a.toLowerCase().includes(f))) })).filter(g => g.items.length)
+                    : groups.filter(g => g.sec === catSec);
+    const chip = i => `<button data-n="${esc(i.name)}" class="${open.has(i.name.toLowerCase()) ? "on" : ""}">${esc(i.name)}${i.default_qty != null ? `<small>${fmtQty(i.default_qty)} ${esc(unitLabel(i.unit))}</small>` : ""}</button>`;
+    $("#catBody").innerHTML = shown.map(g => (f ? `<div class="group">${esc(g.sec)}</div>` : "") + `<div class="chips">${g.items.map(chip).join("")}</div>`).join("") || `<p style="color:var(--mute)">${tr("none.found")}</p>`;
+    $("#catBody").querySelectorAll("button[data-n]").forEach(b => b.onclick = async () => {
+      if (b.classList.contains("on")) return toast(tr("already"));
+      b.classList.add("on");
+      try { const t = await api("/api/add", { method: "POST", body: { text: b.dataset.n, laden: state.store } }); open.add(t.title.toLowerCase()); toast(tr("added", { name: t.title })); loadList(); }
+      catch (e) { b.classList.remove("on"); toast(tr("error", { msg: e.message })); }
+    });
+  };
+  openSheet(`<h2>${tr("cat.title")}</h2>
+    <input class="cat-search" id="catSearch" placeholder="${tr("search")}" autocomplete="off">
+    <div class="cat-tabs" id="catTabs">${groups.map(g => `<button data-s="${esc(g.sec)}" aria-pressed="${g.sec === catSec}">${esc(g.sec)}</button>`).join("")}</div>
+    <div id="catBody"></div>`);
+  $("#catTabs").querySelectorAll("button").forEach(b => b.onclick = () => { catSec = b.dataset.s; $("#catSearch").value = ""; $("#catTabs").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); render(); });
+  $("#catSearch").oninput = e => render(e.target.value);
+  render();
+}
+$("#catBtn").onclick = openCatalog;
+
+// ---------------------------------------------------------------- Menge bearbeiten
+function sectionName(sid) { const e = (state.sectionsFull || []).find(x => x.id === sid); return e ? e.name : ""; }
+function openQty(id) {
+  const it = state.items.find(x => x.id === id); if (!it) return;
+  const units = state.status?.units || [];
+  openSheet(`
+    <h2>${esc(it.title)}</h2>
+    <div class="qtyedit"><input id="qIn" inputmode="decimal" value="${it.qty != null ? fmtQty(it.qty) : ""}" placeholder="${tr("qty")}">
+      <select id="uIn"><option value="">–</option>${units.map(u => `<option value="${u}" ${u === it.unit ? "selected" : ""}>${unitLabel(u)}</option>`).join("")}</select></div>
+    <div class="steps">${[-1, 1, 5, 10].map(d => `<button type="button" data-d="${d}">${d > 0 ? "+" : ""}${d}</button>`).join("")}</div>
+    <div class="field"><label>${tr("section")}</label><select id="sIn">${[...new Set([...storeSections(), ...(it.section ? [it.section] : [])])].map(s => `<option ${s === it.section ? "selected" : ""}>${esc(s)}</option>`).join("")}</select></div>
+    <div class="field"><label>${tr("store.label")}</label><div class="chips" id="storeChips">${state.stores.map(st => `<button type="button" data-st="${esc(st.name)}" class="${(it.stores || []).includes(st.name) ? "on" : ""}">${esc(st.name)}</button>`).join("") || `<span style="color:var(--mute)">${tr("store.none")}</span>`}</div></div>
+    <div class="actions" style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn primary" id="qSave">${tr("save")}</button>
+      <button class="btn quiet" id="qClose">${tr("cancel")}</button>
+      <button class="btn danger" id="qDone" style="margin-left:auto">${tr("tick")}</button>
+    </div>`);
+  const qIn = $("#qIn");
+  $("#sheet").querySelectorAll(".steps button").forEach(b => b.onclick = () => { const v = parseFloat((qIn.value || "0").replace(",", ".")) || 0; qIn.value = fmtQty(Math.max(0, v + Number(b.dataset.d))); });
+  $("#qClose").onclick = closeSheet;
+  $("#storeChips").querySelectorAll("button[data-st]").forEach(b => b.onclick = () => b.classList.toggle("on"));
+  const storesBefore = (it.stores || []).slice().sort().join("|");
+  $("#qDone").onclick = async () => { closeSheet(); await api(`/api/check/${id}`, { method: "POST" }); toast(tr("done")); loadList(); };
+  $("#qSave").onclick = async () => {
+    const qty = qIn.value.trim() === "" ? null : parseFloat(qIn.value.replace(",", "."));
+    const unit = $("#uIn").value || null, sec = $("#sIn").value;
+    const storesNow = [...$("#storeChips").querySelectorAll("button.on")].map(b => b.dataset.st);
+    try {
+      await api(`/api/qty/${id}`, { method: "POST", body: { qty, unit } });
+      if (sec && sec !== it.section) await api(`/api/move/${id}`, { method: "POST", body: { section: sec } });
+      if (storesNow.slice().sort().join("|") !== storesBefore) await api(`/api/task-stores/${id}`, { method: "POST", body: { stores: storesNow } });
+      closeSheet(); toast(tr("saved")); loadList();
+    } catch (e) { toast(tr("error", { msg: e.message })); }
+  };
+  setTimeout(() => qIn.select(), 50);
+}
+
+// ---------------------------------------------------------------- Zuletzt
+function renderRecent() {
+  const v = $("#view-recent");
+  const open = new Set(state.items.map(i => i.title.toLowerCase()));
+  const rows = state.recent.filter(r => !open.has(r.title.toLowerCase()));
+  if (!rows.length) { v.innerHTML = `<div class="empty-state"><b>${tr("recent.empty")}</b>${tr("recent.hint")}</div>`; return; }
+  const tpl = state.templates.length ? `<div class="section"><h2>${tr("templates")}</h2></div>` + state.templates.map(t => `<div class="recent"><span class="name">${esc(t.name)}</span><time>${tr("n.items", { n: t.items.length })}</time><button class="add" data-tpl="${esc(t.name)}" aria-label="${tr("tpl.apply")}">+</button></div>`).join("") : "";
+  v.innerHTML = tpl + `<div class="section"><h2>${tr("recent.bought")}</h2></div>` + rows.map(r => `<div class="recent"><span class="name">${esc(r.title)}</span><time>${new Date(r.completed_at).toLocaleDateString(LANG === "de" ? "de-DE" : "en-GB", { day: "2-digit", month: "2-digit" })}</time><button class="add" data-name="${esc(r.title)}" aria-label="${tr("re-add")}">+</button></div>`).join("");
+  v.querySelectorAll("[data-name]").forEach(b => b.onclick = async () => { try { await api("/api/add", { method: "POST", body: { text: b.dataset.name, laden: state.store } }); toast(tr("added", { name: b.dataset.name })); await loadList(); renderRecent(); } catch (e) { toast(tr("error", { msg: e.message })); } });
+  v.querySelectorAll("[data-tpl]").forEach(b => b.onclick = async () => { try { const r = await api(`/api/template/${encodeURIComponent(b.dataset.tpl)}/apply`, { method: "POST", body: { laden: state.store } }); toast(tr("n.added", { n: r.length })); await loadList(); renderRecent(); } catch (e) { toast(tr("error", { msg: e.message })); } });
+}
+
+// ---------------------------------------------------------------- Stammdaten
+function renderAdmin() {
+  $("#subtabs").querySelectorAll("button").forEach(b => { b.setAttribute("aria-pressed", b.dataset.sub === state.sub); b.onclick = () => { state.sub = b.dataset.sub; renderAdmin(); }; });
+  const body = $("#admin-body");
+  const secs = state.status?.sections || [], units = state.status?.units || [];
+  if (state.sub === "items") {
+    const card = i => `<div class="card"><h3>${esc(i.name)}</h3><div class="meta">${i.default_qty != null ? fmtQty(i.default_qty) + " " + unitLabel(i.unit) + " · " : ""}${esc(sectionName(i.section_id) || tr("item.nosec"))}${i.aliases?.length ? " · " + esc(tr("item.also", { names: i.aliases.join(", ") })) : ""}</div><div class="actions"><button class="btn quiet" data-edit="${i.id}">${tr("edit")}</button><button class="btn danger" data-del="${i.id}">${tr("delete")}</button></div></div>`;
+    const bySec = secs.map(sec => ({ sec, items: state.stammItems.filter(i => sectionName(i.section_id) === sec) })).filter(g => g.items.length);
+    const noSec = state.stammItems.filter(i => !i.section_id);
+    if (noSec.length) bySec.push({ sec: tr("no.section"), items: noSec });
+    body.innerHTML = `<div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap"><button class="btn primary" id="newItem">${tr("item.new")}</button><button class="btn quiet" id="seedItems">${tr("item.seed")}</button></div>` +
+      (bySec.length ? bySec.map(g => `<div class="group" ${secStyle(g.sec)} style="display:flex;gap:6px;align-items:center;--sec:var(${COLOR_VAR[(secMeta[g.sec] || {}).color] || "--c-sonst"})"><span style="width:18px;height:18px;display:inline-flex;color:var(--sec)">${iconFor(g.sec)}</span>${esc(g.sec)} <span style="font-weight:400">${g.items.length}</span></div>` + g.items.map(card).join("")).join("") : `<div class="empty-state">${tr("item.none")}</div>`);
+    $("#newItem").onclick = () => editItem(null);
+    $("#seedItems").onclick = async () => { try { const r = await api("/api/items/import", { method: "POST", body: { overwrite: false } }); toast(tr("item.imported", { added: r.added, updated: r.updated })); loadStamm(); } catch (e) { toast(e.message); } };
+    body.querySelectorAll("[data-edit]").forEach(b => b.onclick = () => editItem(state.stammItems.find(i => i.id == b.dataset.edit)));
+    body.querySelectorAll("[data-del]").forEach(b => b.onclick = async () => { if (!confirm(tr("item.confirmdel"))) return; await api(`/api/items/${b.dataset.del}`, { method: "DELETE" }); loadStamm(); });
+  }
+  if (state.sub === "sections") {
+    body.innerHTML = `<button class="btn primary" id="newSec" style="margin-bottom:12px">${tr("sec.new")}</button>` +
+      (state.sectionsFull || []).map((sec, i, arr) => `<div class="card" ${secStyle(sec.name)}><div style="display:flex;align-items:center;gap:12px"><span class="tick" style="flex:0 0 46px">${iconFor(sec.name)}</span><div style="flex:1"><h3>${esc(sec.name)}</h3><div class="meta">${tr("sec.count", { n: state.stammItems.filter(i => i.section_id === sec.id).length })}</div></div><button class="btn quiet" data-up="${i}" ${i === 0 ? "disabled" : ""} style="min-width:40px;padding:0">↑</button><button class="btn quiet" data-dn="${i}" ${i === arr.length - 1 ? "disabled" : ""} style="min-width:40px;padding:0">↓</button></div><div class="actions"><button class="btn quiet" data-edit="${sec.id}">${tr("edit")}</button><button class="btn danger" data-del="${sec.id}">${tr("delete")}</button></div></div>`).join("") +
+      `<p class="meta" style="color:var(--mute);font-size:14px">${esc(tr("sec.info", { project: state.status?.project_name || "" }))}</p>`;
+    $("#newSec").onclick = () => editSection(null);
+    const reorderSec = async (i, j) => { const ids = state.sectionsFull.map(x => x.id);[ids[i], ids[j]] = [ids[j], ids[i]]; try { await api("/api/sections/order", { method: "POST", body: { ids } }); await loadStatus(); renderAdmin(); loadList(); } catch (e) { toast(e.message); } };
+    body.querySelectorAll("[data-up]").forEach(b => b.onclick = () => reorderSec(+b.dataset.up, +b.dataset.up - 1));
+    body.querySelectorAll("[data-dn]").forEach(b => b.onclick = () => reorderSec(+b.dataset.dn, +b.dataset.dn + 1));
+    body.querySelectorAll("[data-edit]").forEach(b => b.onclick = () => editSection(state.sectionsFull.find(x => x.id === b.dataset.edit)));
+    body.querySelectorAll("[data-del]").forEach(b => b.onclick = async () => {
+      const sec = state.sectionsFull.find(x => x.id === b.dataset.del);
+      if (!confirm(tr("sec.confirmdel", { name: sec.name }))) return;
+      try { await api(`/api/sections/${sec.id}`, { method: "DELETE" }); toast(tr("deleted")); await loadStatus(); loadStamm(); loadList(); } catch (e) { toast(e.message); }
+    });
+  }
+  if (state.sub === "stores") {
+    body.innerHTML = `<button class="btn primary" id="newStore" style="margin-bottom:12px">${tr("store.new")}</button>` +
+      state.stores.map((s, i) => `<div class="card"><div style="display:flex;align-items:center;gap:8px"><div style="flex:1"><h3>${esc(s.name)}</h3><div class="meta">${esc(s.order.join(" › "))}</div></div><button class="btn quiet" data-up="${i}" ${i === 0 ? "disabled" : ""} style="min-width:40px;padding:0">↑</button><button class="btn quiet" data-dn="${i}" ${i === state.stores.length - 1 ? "disabled" : ""} style="min-width:40px;padding:0">↓</button></div><div class="actions"><button class="btn quiet" data-edit="${s.id}">${tr("edit")}</button><button class="btn danger" data-del="${s.id}">${tr("delete")}</button></div></div>`).join("");
+    $("#newStore").onclick = () => editStore(null);
+    const reorder = async (i, j) => { const names = state.stores.map(s => s.name);[names[i], names[j]] = [names[j], names[i]]; try { await api("/api/stores/order", { method: "POST", body: { names } }); await loadStatus(); state.stores = await api("/api/stores"); renderStores(); renderAdmin(); } catch (e) { toast(e.message); } };
+    body.querySelectorAll("[data-up]").forEach(b => b.onclick = () => reorder(+b.dataset.up, +b.dataset.up - 1));
+    body.querySelectorAll("[data-dn]").forEach(b => b.onclick = () => reorder(+b.dataset.dn, +b.dataset.dn + 1));
+    body.querySelectorAll("[data-edit]").forEach(b => b.onclick = () => editStore(state.stores.find(s => s.id == b.dataset.edit)));
+    body.querySelectorAll("[data-del]").forEach(b => b.onclick = async () => { if (!confirm(tr("store.confirmdel"))) return; await api(`/api/stores/${b.dataset.del}`, { method: "DELETE" }); loadStamm(); loadStatus().then(renderStores); });
+  }
+  if (state.sub === "templates") {
+    body.innerHTML = `<button class="btn primary" id="newTpl" style="margin-bottom:12px">${tr("tpl.new")}</button>` +
+      state.templates.map(t => `<div class="card"><h3>${esc(t.name)}</h3><div class="meta">${esc(t.items.map(i => (i.qty != null ? fmtQty(i.qty) + " " + unitLabel(i.unit) + " " : "") + i.name).join(", "))}</div><div class="actions"><button class="btn quiet" data-edit="${esc(t.name)}">${tr("edit")}</button><button class="btn danger" data-del="${esc(t.name)}">${tr("delete")}</button></div></div>`).join("");
+    $("#newTpl").onclick = () => editTemplate(null);
+    body.querySelectorAll("[data-edit]").forEach(b => b.onclick = () => editTemplate(state.templates.find(t => t.name === b.dataset.edit)));
+    body.querySelectorAll("[data-del]").forEach(b => b.onclick = async () => { if (!confirm(tr("tpl.confirmdel"))) return; await api(`/api/templates/${encodeURIComponent(b.dataset.del)}`, { method: "DELETE" }); loadStamm(); });
+  }
+  if (state.sub === "users") {
+    const users = state.status?.users || [];
+    body.innerHTML = `<div class="card"><h3>${tr("user.add")}</h3><div class="meta">${tr("user.info")}</div>
+      <div class="field" style="margin-top:10px"><label>${tr("name")}</label><input id="uName"></div>
+      <div class="field"><label>${tr("user.token")}</label><input id="uTok" type="password" placeholder="ot_…"></div>
+      <button class="btn primary" id="uSave">${tr("user.save")}</button></div>` +
+      users.map(u => `<div class="card"><h3>${esc(u)}</h3><div class="actions"><button class="btn danger" data-del="${esc(u)}">${tr("remove")}</button></div></div>`).join("");
+    $("#uSave").onclick = async () => { try { const r = await api("/api/users", { method: "POST", body: { name: $("#uName").value.trim(), token: $("#uTok").value.trim() } }); toast(tr("user.connected", { name: r.opentodo_user })); await loadStatus(); renderAdmin(); renderStores(); } catch (e) { toast(e.message); } };
+    body.querySelectorAll("[data-del]").forEach(b => b.onclick = async () => { if (!confirm(tr("user.confirmdel", { name: b.dataset.del }))) return; await api(`/api/users/${encodeURIComponent(b.dataset.del)}`, { method: "DELETE" }); await loadStatus(); renderAdmin(); });
+  }
+}
+function editItem(it) {
+  const secs = state.status?.sections || [], units = state.status?.units || [];
+  openSheet(`<h2>${it ? tr("item.edit") : tr("item.new")}</h2>
+    <div class="field"><label>${tr("name")}</label><input id="iName" value="${esc(it?.name || "")}"></div>
+    <div class="grid2"><div class="field"><label>${tr("item.defqty")}</label><input id="iQty" inputmode="decimal" value="${it?.default_qty != null ? fmtQty(it.default_qty) : ""}"></div>
+    <div class="field"><label>${tr("item.unit")}</label><select id="iUnit"><option value="">–</option>${units.map(u => `<option value="${u}" ${u === it?.unit ? "selected" : ""}>${unitLabel(u)}</option>`).join("")}</select></div></div>
+    <div class="field"><label>${tr("section")}</label><select id="iSec"><option value="">–</option>${secs.map(s => `<option ${sectionName(it?.section_id) === s ? "selected" : ""}>${esc(s)}</option>`).join("")}</select></div>
+    <div class="field"><label>${tr("item.aliases")}</label><input id="iAlias" value="${esc((it?.aliases || []).join(", "))}"></div>
+    <label style="display:flex;gap:8px;align-items:center;margin-bottom:14px"><input type="checkbox" id="iMove" checked> ${tr("item.move")}</label>
+    <div style="display:flex;gap:8px"><button class="btn primary" id="iSave">${tr("save")}</button><button class="btn quiet" id="iClose">${tr("cancel")}</button></div>`);
+  $("#iClose").onclick = closeSheet;
+  $("#iSave").onclick = async () => {
+    const body = { name: $("#iName").value.trim(), aliases: $("#iAlias").value.split(",").map(s => s.trim()).filter(Boolean),
+      default_qty: $("#iQty").value.trim() ? parseFloat($("#iQty").value.replace(",", ".")) : null, unit: $("#iUnit").value || null, section: $("#iSec").value || null, move_open: $("#iMove").checked };
+    if (!body.name) return toast(tr("name.missing"));
+    try { const r = await api("/api/items", { method: "POST", body }); closeSheet(); toast(r.moved ? tr("item.saved", { n: r.moved }) : tr("saved")); loadStamm(); loadList(); } catch (e) { toast(e.message); }
+  };
+}
+function editSection(sec) {
+  let icon = sec?.icon || "tag", color = sec?.color || "grey";
+  const draw = () => `<div class="chips" id="icoPick">${(state.iconKeys || []).map(k => `<button type="button" data-k="${k}" class="${k === icon ? "on" : ""}" aria-label="${k}">${iconSvg(k)}</button>`).join("")}</div>
+    <div class="chips" id="colPick" style="margin-top:10px">${(state.colorKeys || []).map(k => `<button type="button" data-k="${k}" class="${k === color ? "on" : ""}" style="--sec:var(${COLOR_VAR[k]});border-color:var(--sec);color:var(--sec);${k === color ? "background:var(--sec);color:#fff" : ""}" aria-label="${k}">●</button>`).join("")}</div>`;
+  openSheet(`<h2>${sec ? tr("sec.edit") : tr("sec.new")}</h2>
+    <div class="field"><label>${tr("name")}</label><input id="secName" value="${esc(sec?.name || "")}"></div>
+    <div class="field"><label>${tr("sec.look")}</label><div id="pick">${draw()}</div></div>
+    <div style="display:flex;gap:8px"><button class="btn primary" id="secSave">${tr("save")}</button><button class="btn quiet" id="secClose">${tr("cancel")}</button></div>`);
+  const bind = () => {
+    $("#icoPick").querySelectorAll("button").forEach(b => b.onclick = () => { icon = b.dataset.k; $("#pick").innerHTML = draw(); bind(); });
+    $("#colPick").querySelectorAll("button").forEach(b => b.onclick = () => { color = b.dataset.k; $("#pick").innerHTML = draw(); bind(); });
+  };
+  bind();
+  $("#pick").querySelectorAll("#icoPick .ico").forEach(sv => { sv.style.width = "26px"; sv.style.height = "26px"; sv.style.stroke = "currentColor"; sv.style.strokeWidth = "2"; sv.style.fill = "none"; });
+  $("#secClose").onclick = closeSheet;
+  $("#secSave").onclick = async () => {
+    const name = $("#secName").value.trim(); if (!name) return toast(tr("name.missing"));
+    try {
+      if (sec) await api(`/api/sections/${sec.id}`, { method: "PATCH", body: { name: name !== sec.name ? name : null, icon, color } });
+      else await api("/api/sections", { method: "POST", body: { name, icon, color } });
+      closeSheet(); toast(tr("saved")); await loadStatus(); loadStamm(); loadList();
+    } catch (e) { toast(e.message); }
+  };
+}
+function editStore(s) {
+  const all = state.status?.sections || [];
+  const chosen = s && s.order && s.order.length ? s.order.filter(n => all.includes(n)) : all.slice();
+  const rows = () => chosen.concat(all.filter(n => !chosen.includes(n)));
+  const draw = () => `<ol class="order" id="ord">${rows().map((n, i) => { const on = chosen.includes(n); const idx = chosen.indexOf(n);
+    return `<li ${on ? "" : 'style="opacity:.55"'}><input type="checkbox" data-t="${esc(n)}" ${on ? "checked" : ""} style="width:22px;height:22px"><span>${esc(n)}</span>${on ? `<button data-up="${idx}" ${idx === 0 ? "disabled" : ""}>↑</button><button data-dn="${idx}" ${idx === chosen.length - 1 ? "disabled" : ""}>↓</button>` : ""}</li>`; }).join("")}</ol>`;
+  openSheet(`<h2>${s ? tr("store.edit") : tr("store.new")}</h2>
+    <div class="field"><label>${tr("name")}</label><input id="sName" value="${esc(s?.name || "")}"></div>
+    <div class="field"><label>${tr("store.sections")}</label><div id="ordBox">${draw()}</div></div>
+    <div style="display:flex;gap:8px"><button class="btn primary" id="sSave">${tr("save")}</button><button class="btn quiet" id="sClose">${tr("cancel")}</button></div>`);
+  const bind = () => {
+    $("#ordBox").querySelectorAll("[data-up]").forEach(b => b.onclick = () => { const i = +b.dataset.up;[chosen[i - 1], chosen[i]] = [chosen[i], chosen[i - 1]]; $("#ordBox").innerHTML = draw(); bind(); });
+    $("#ordBox").querySelectorAll("[data-dn]").forEach(b => b.onclick = () => { const i = +b.dataset.dn;[chosen[i + 1], chosen[i]] = [chosen[i], chosen[i + 1]]; $("#ordBox").innerHTML = draw(); bind(); });
+    $("#ordBox").querySelectorAll("[data-t]").forEach(c => c.onchange = () => { const n = c.dataset.t; if (c.checked) { if (!chosen.includes(n)) chosen.push(n); } else { const i = chosen.indexOf(n); if (i >= 0) chosen.splice(i, 1); } $("#ordBox").innerHTML = draw(); bind(); });
+  };
+  bind();
+  $("#sClose").onclick = closeSheet;
+  $("#sSave").onclick = async () => {
+    const name = $("#sName").value.trim(); if (!name) return toast(tr("name.missing"));
+    if (!chosen.length) return toast(tr("store.min"));
+    try { await api("/api/stores", { method: "POST", body: { name, order: chosen } }); closeSheet(); toast(tr("saved")); await loadStatus(); try { state.stores = await api("/api/stores"); } catch {} renderStores(); loadStamm(); loadList(); } catch (e) { toast(e.message); }
+  };
+}
+// ---------------------------------------------------------------- Sheet / Person
+function openSheet(html) { $("#sheet").innerHTML = html; $("#sheetBg").classList.add("show"); }
+function closeSheet() { $("#sheetBg").classList.remove("show"); }
+$("#sheetBg").onclick = e => { if (e.target.id === "sheetBg") closeSheet(); };
+function askUser() {
+  const users = state.status?.users || [];
+  openSheet(`<h2>${tr("who.ask")}</h2>${users.length ? `<div class="persons">${users.map(u => `<button data-u="${esc(u)}" aria-pressed="${u === state.user}">${esc(u)}</button>`).join("")}</div>` : `<p>${tr("user.none")}</p>`}
+    <p style="color:var(--mute);font-size:14px;margin:14px 0 8px">${tr("user.missing")}</p>
+    <button class="btn quiet" id="toUsers">${tr("user.addnew")}</button>`);
+  $("#sheet").querySelectorAll("[data-u]").forEach(b => b.onclick = () => { state.user = b.dataset.u; try { localStorage.setItem("einkauf.user", state.user); } catch {} closeSheet(); renderStores(); loadList(); loadStamm(); });
+  const tu = $("#toUsers"); if (tu) tu.onclick = () => { closeSheet(); showView("admin"); state.sub = "users"; renderAdmin(); };
+}
+$("#whoBtn").onclick = askUser;
+
+
+// ---------------------------------------------------------------- Darstellung (auto / hell / dunkel)
+const THEME_ICONS = {
+  auto: '<circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor" stroke="none"/>',
+  light: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+  dark: '<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>',
+};
+function applyTheme(mode) {
+  if (mode === "auto") document.documentElement.removeAttribute("data-theme"); else document.documentElement.setAttribute("data-theme", mode);
+  const btn = $("#themeBtn"); if (btn) btn.innerHTML = `<svg viewBox="0 0 24 24">${THEME_ICONS[mode]}</svg>`;
+  const meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.content = getComputedStyle(document.documentElement).getPropertyValue("--bg").trim() || "#0E5A3A";
+}
+let themeMode = "auto"; try { themeMode = localStorage.getItem("einkauf.theme") || "auto"; } catch {}
+applyTheme(themeMode);
+$("#themeBtn").onclick = () => { themeMode = { auto: "light", light: "dark", dark: "auto" }[themeMode]; try { localStorage.setItem("einkauf.theme", themeMode); } catch {} applyTheme(themeMode); toast(tr("theme." + themeMode)); };
+
+// ---------------------------------------------------------------- Views
+function showView(v) {
+  state.view = v;
+  document.querySelectorAll(".view").forEach(s => s.classList.toggle("active", s.id === "view-" + v));
+  document.querySelectorAll("nav button").forEach(b => b.dataset.view === v ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current"));
+  $("#composer").style.display = v === "list" ? "" : "none";
+  if (v === "recent") loadRecent();
+  if (v === "admin") loadStamm();
+}
+document.querySelectorAll("nav button").forEach(b => b.onclick = () => showView(b.dataset.view));
+
+// ---------------------------------------------------------------- SSE
+function connectEvents() {
+  if (state.es) state.es.close();
+  const es = new EventSource("/events"); state.es = es;
+  let t;
+  es.onmessage = () => { clearTimeout(t); t = setTimeout(() => { loadList(); if (state.view === "recent") loadRecent(); }, 250); };
+  es.addEventListener("hello", () => { $("#offline").classList.remove("show"); loadList(); });
+  es.onerror = () => { $("#offline").classList.add("show"); };
+}
+document.addEventListener("visibilitychange", () => { if (!document.hidden) { loadList(); if (state.es?.readyState === 2) connectEvents(); } });
+
+// ---------------------------------------------------------------- Start
+function setLang(l) {
+  LANG = l; try { localStorage.setItem("einkauf.lang", l); } catch {}
+  applyI18n(); $("#langBtn").textContent = l.toUpperCase(); applyTheme(themeMode);
+  renderStores(); renderList(); renderRecent(); renderAdmin();
+}
+$("#langBtn").onclick = () => { const k = Object.keys(LANGS); setLang(k[(k.indexOf(LANG) + 1) % k.length]); };
+
+(async () => {
+  pickLang(null); applyI18n(); $("#langBtn").textContent = LANG.toUpperCase();
+  try { await loadStatus(); } catch { $("#offline").classList.add("show"); }
+  let stored = null; try { stored = localStorage.getItem("einkauf.lang"); } catch {}
+  if (!stored && state.status?.lang) { pickLang(state.status.lang); applyI18n(); $("#langBtn").textContent = LANG.toUpperCase(); }
+  if (state.status && state.status.project_ok === false) toast(tr("setup.warn"));
+  // Abschnitts-IDs für Namensauflösung holen
+  try { const items = await api("/api/items"); state.stammItems = items; } catch {}
+  try { state.stores = await api("/api/stores"); } catch {}
+  renderStores();
+  if (!state.user || !(state.status?.users || []).includes(state.user)) { state.user = null; askUser(); }
+  else { loadList(); loadStamm(); }
+  connectEvents();
+  if ("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js").catch(() => {});
+})();
+</script>
+</body>
+</html>

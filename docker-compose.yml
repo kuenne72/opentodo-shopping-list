@@ -1,0 +1,17 @@
+services:
+  einkauf:
+    build: .
+    # or use the published image instead of building:
+    # image: ghcr.io/kuenne72/opentodo-shopping-list:latest
+    container_name: einkauf
+    restart: unless-stopped
+    ports:
+      - "${EINKAUF_PORT:-8086}:8086"
+    env_file: .env
+    environment:
+      EINKAUF_DB: /data/einkauf.db
+    volumes:
+      - ./data:/data
+    # Lets the container (and OpenTodo's webhook) reach services on the Docker host
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
