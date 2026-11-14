@@ -125,6 +125,16 @@ async def _lang_middleware(request: Request, call_next):
         current_lang.reset(token)
 
 
+@app.middleware("http")
+async def _nocache_middleware(request: Request, call_next):
+    """App shell is revalidated on every load, so updates reach the phone immediately."""
+    resp = await call_next(request)
+    path = request.url.path
+    if request.method == "GET" and (path in ("/", "/sw.js", "/manifest.webmanifest") or path.startswith("/static/")):
+        resp.headers["Cache-Control"] = "no-cache"
+    return resp
+
+
 @app.exception_handler(OpenTodoError)
 async def _ot_error(request: Request, e: OpenTodoError):
     who = request.headers.get("X-Einkauf-User") or request.query_params.get("user") or "-"
