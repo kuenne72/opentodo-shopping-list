@@ -427,11 +427,31 @@ function stage(name) {
   preview.querySelector(".pv-ok").onclick = () => { const t = input.value.trim(); hidePreview(); input.value = ""; if (t) submitText(t, true); };
   preview.querySelector(".pv-x").onclick = () => { hidePreview(); input.focus(); };
 }
+// Rank of an item for query q (lower = better, -1 = no match):
+// 0 exact name, 1 name starts with q, 2 a word in the name starts with q,
+// 3 an alias (or a word in it) starts with q, 4 q inside the name, 5 q inside an alias.
+function matchRank(item, q) {
+  const words = s => s.split(/[\s\-\/]+/);
+  const n = item.name.toLowerCase(), al = (item.aliases || []).map(a => a.toLowerCase());
+  if (n === q) return 0;
+  if (n.startsWith(q)) return 1;
+  if (words(n).some(w => w.startsWith(q))) return 2;
+  if (al.some(a => words(a).some(w => w.startsWith(q)))) return 3;
+  if (n.includes(q)) return 4;
+  if (al.some(a => a.includes(q))) return 5;
+  return -1;
+}
+// Best matches first; same rank: shorter name first, then alphabetical.
+function rankedItems(q, limit) {
+  return state.stammItems.map(i => [matchRank(i, q), i]).filter(([r]) => r >= 0)
+    .sort((a, b) => a[0] - b[0] || a[1].name.length - b[1].name.length || a[1].name.localeCompare(b[1].name))
+    .slice(0, limit).map(([, i]) => i);
+}
 input.addEventListener("input", () => {
   hidePreview();
   const txt = input.value.trim().toLowerCase().replace(QTY_PREFIX, "");
   if (txt.length < 1) { suggest.classList.remove("show"); return; }
-  const hits = state.stammItems.filter(i => i.name.toLowerCase().includes(txt) || (i.aliases || []).some(a => a.toLowerCase().includes(txt))).slice(0, 5);
+  const hits = rankedItems(txt, 5);
   if (!hits.length) { suggest.classList.remove("show"); return; }
   suggest.innerHTML = hits.map(i => `<button type="button" data-name="${esc(i.name)}"><span>${esc(i.name)}</span><small>${i.default_qty != null ? fmtQty(i.default_qty) + " " + unitLabel(i.unit) : ""} ${esc(sectionName(i.section_id))}</small></button>`).join("");
   suggest.classList.add("show");
