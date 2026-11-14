@@ -213,7 +213,11 @@ class ShoppingList:
                 self.db.add_task_store(existing["id"], st["id"])
             if item and not existing.get("section_id") and item.get("section_id"):
                 changes["section_id"] = item["section_id"]
-            return self._written(self.client.patch_task(existing["id"], **changes)) if changes else existing
+            if not changes:
+                return existing
+            undo = {"kind": "qty", "qty": old, "unit": f.get(config.FIELD_EINHEIT)} if fields else None
+            res = self._written(self.client.patch_task(existing["id"], **changes))
+            return dict(res) | ({"_undo": undo} if undo else {})
 
         fields = {}
         if qty is not None and config.FIELD_MENGE:
@@ -230,8 +234,23 @@ class ShoppingList:
         if not item:
             # neuen Artikel in den Stamm aufnehmen, damit er beim nächsten Mal bekannt ist
             self.db.upsert_item(name, default_qty=qty, unit=unit, section_id=section_id)
-            task = dict(task) | {"_new_item": True}
-        return task
+            task = dict(task) | {"_new_item": True, "_item_name": name}
+        return dict(task) | {"_undo": {"kind": "new"}}
+
+    def undo_add(self, task_id: str, undo: dict) -> dict:
+        """Macht add() rückgängig: neuen Eintrag entfernen bzw. alte Menge wiederherstellen."""
+        if undo.get("kind") == "qty":
+            fields = {config.FIELD_MENGE: undo.get("qty")}
+            if undo.get("unit") is not None:
+                fields[config.FIELD_EINHEIT] = undo["unit"]
+            return self._written(self.client.patch_task(task_id, fields=fields))
+        task = next((t for t in self.open_tasks() if t["id"] == task_id), None) or {"id": task_id, "project_id": self.project_id}
+        try:
+            self.client.delete_task(task_id)
+            return self._written(dict(task) | {"deleted_at": "removed"})
+        except Exception:
+            # Fallback, falls die API kein Löschen erlaubt: als erledigt markieren
+            return self._written(self.client.complete_task(task_id))
 
     def check(self, task_id: str) -> dict:
         return self._written(self.client.complete_task(task_id))

@@ -215,6 +215,23 @@ def api_add(body: AddBody, x_einkauf_user: str | None = Header(None), user: str 
     return _list_for(_user(x_einkauf_user, user)).add(body.text, store=body.laden)
 
 
+class UndoBody(BaseModel):
+    kind: str = "new"            # new | qty
+    qty: float | None = None
+    unit: str | None = None
+    item_name: str | None = None  # nur bei neuem Stammartikel: wieder aus dem Stamm nehmen
+
+
+@app.post("/api/undo-add/{task_id}")
+def api_undo_add(task_id: str, body: UndoBody, x_einkauf_user: str | None = Header(None), user: str | None = Query(None)):
+    res = _list_for(_user(x_einkauf_user, user)).undo_add(task_id, body.model_dump())
+    if body.item_name:
+        it = db.find_item(body.item_name)
+        if it:
+            db.delete_item(it["id"])
+    return res
+
+
 @app.post("/api/check/{task_id}")
 def api_check(task_id: str, x_einkauf_user: str | None = Header(None), user: str | None = Query(None)):
     return _list_for(_user(x_einkauf_user, user)).check(task_id)

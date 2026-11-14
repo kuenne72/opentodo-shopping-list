@@ -78,9 +78,9 @@ main{flex:1;padding:4px 16px calc(150px + env(safe-area-inset-bottom))}
 .composer{position:fixed;left:0;right:0;bottom:calc(64px + env(safe-area-inset-bottom));z-index:6;padding:8px 16px;background:linear-gradient(to top,var(--bg) 70%,transparent)}
 .composer .inner{max-width:720px;margin:0 auto;position:relative}
 .composer form{display:flex;gap:8px}
-.composer input{flex:1;min-width:0;min-height:52px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);padding:0 18px;font-size:18px}
+.composer input{flex:1;min-width:0;min-height:56px;border-radius:16px;border:1.5px solid var(--line);background:var(--card);padding:0 18px;font-size:18px}
 .composer input::placeholder{color:var(--mute)}
-.composer button{flex:0 0 52px;height:52px;border-radius:50%;background:var(--green);color:#fff;font-size:28px;line-height:1}
+.composer button{flex:0 0 56px;height:56px;border-radius:16px;background:var(--green);color:#fff;font-size:28px;line-height:1}
 .composer .catbtn{background:var(--card);border:1.5px solid var(--line);color:var(--ink)}
 .composer .catbtn svg{width:24px;height:24px;stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round}
 .cat-tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -16px 12px;padding:0 16px}
@@ -90,15 +90,34 @@ main{flex:1;padding:4px 16px calc(150px + env(safe-area-inset-bottom))}
 .chips button{min-height:44px;padding:0 14px;border-radius:12px;background:var(--bg);border:1px solid var(--line);font-size:17px;display:flex;align-items:center;gap:6px}
 .chips button small{color:var(--mute);font-size:13px}
 .chips button.on{background:var(--green-soft);border-color:var(--green);color:var(--green)}
+.chips.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.chips.grid button.pick{min-height:58px;font-size:18px;justify-content:space-between;text-align:left;padding:0 14px}
+.chips.grid button.pick.on{opacity:.55}
+.chips.grid button.pick.sel{background:var(--green);border-color:var(--green);color:#fff}
+.chips.grid button.pick.sel small{color:#fff;opacity:.85}
+.chips.grid button.pick.sel::after{content:"\2713";font-weight:800;margin-left:4px}
+.selbar{position:sticky;bottom:-16px;margin:14px -16px -16px;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:var(--card);border-top:1px solid var(--line);display:flex;gap:12px;align-items:center}
+.selbar .names{flex:1;min-width:0;font-size:15px;color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.selbar button{flex:0 0 auto;min-height:56px;padding:0 22px;border-radius:14px;background:var(--green);color:#fff;font-size:19px;font-weight:700}
+.selbar button:disabled{opacity:.4}
 .cat-search{width:100%;min-height:46px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);padding:0 12px;font-size:17px;margin-bottom:12px}
 .group{margin:14px 0 6px;font-size:15px;color:var(--mute);font-weight:700}
 .group .ico{width:18px;height:18px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
 .chips button .ico{width:22px;height:22px;stroke:currentColor;stroke-width:2;fill:none}
-.suggest{position:absolute;left:0;right:60px;bottom:60px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.12);display:none}
-.suggest.show{display:block}
-.suggest button{display:flex;justify-content:space-between;width:100%;text-align:left;padding:12px 16px;min-height:48px;border-top:1px solid var(--line);font-size:17px}
-.suggest button:first-child{border-top:0}
-.suggest small{color:var(--mute)}
+.suggest{position:absolute;left:0;right:0;bottom:64px;display:none;flex-direction:column;gap:8px}
+.suggest.show{display:flex}
+.suggest button{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:left;padding:14px 18px;min-height:62px;border:1.5px solid var(--line);border-radius:16px;background:var(--card);color:var(--ink);font-size:20px;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.suggest small{color:var(--mute);font-size:14px;font-weight:400;text-align:right}
+.preview{position:absolute;left:0;right:0;bottom:64px;background:var(--card);border:2px solid var(--green);border-radius:var(--radius);box-shadow:0 8px 24px rgba(0,0,0,.18);padding:12px;display:none;grid-template-columns:1fr auto;gap:10px;align-items:center}
+.preview.show{display:grid}
+.preview .pv-main{display:flex;flex-direction:column;min-width:0}
+.preview .pv-main b{font-size:22px;overflow-wrap:anywhere}
+.preview .pv-main small{color:var(--mute);font-size:14px}
+.composer .preview button{height:auto;border-radius:12px;font-size:19px;font-weight:700}
+.composer .preview .pv-ok{grid-column:1 / -1;min-height:58px;background:var(--green);color:#fff}
+.composer .preview .pv-x{grid-column:2;grid-row:1;flex:none;width:52px;min-height:52px;background:var(--bg);color:var(--ink);font-size:28px;border:1px solid var(--line)}
+.sheet .mean button{display:block;width:100%;min-height:60px;margin-bottom:10px;border-radius:var(--radius);background:var(--bg);font-size:21px;font-weight:700;text-align:left;padding:0 18px}
+.sheet .mean button.keep{background:transparent;border:1.5px dashed var(--line);font-size:17px;font-weight:600;color:var(--mute)}
 
 /* Tabs */
 nav{position:fixed;left:0;right:0;bottom:0;z-index:7;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
@@ -150,6 +169,8 @@ nav svg{width:24px;height:24px;stroke:currentColor;stroke-width:2;fill:none;stro
 
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(140px + env(safe-area-inset-bottom));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:15px;z-index:30;opacity:0;transition:opacity .15s;pointer-events:none}
 .toast.show{opacity:1}
+.toast.has-action{pointer-events:auto;display:flex;align-items:center;gap:16px}
+.toast button{color:inherit;font-weight:800;text-decoration:underline;min-height:40px;padding:0 6px;font-size:16px}
 .offline{background:var(--ochre-soft);color:var(--ochre);text-align:center;font-size:14px;padding:4px;border-radius:8px;margin-top:6px;display:none}
 .offline.show{display:block}
 </style>
@@ -187,9 +208,10 @@ nav svg{width:24px;height:24px;stroke:currentColor;stroke-width:2;fill:none;stro
   <div class="composer" id="composer">
     <div class="inner">
       <div class="suggest" id="suggest"></div>
+      <div class="preview" id="preview"></div>
       <form id="addForm" autocomplete="off">
         <button type="button" id="catBtn" class="catbtn" data-i18n-attr="aria-label:cat.open"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
-        <input id="addInput" data-i18n-attr="placeholder:add.placeholder" enterkeyhint="done" inputmode="text">
+        <input id="addInput" data-i18n-attr="placeholder:add.placeholder" enterkeyhint="done" inputmode="text" autocorrect="off" autocapitalize="sentences" spellcheck="false">
         <button type="submit" data-i18n-attr="aria-label:add.aria">+</button>
       </form>
     </div>
@@ -236,7 +258,15 @@ async function api(path, opts = {}) {
   return r.status === 204 ? null : r.json();
 }
 let toastT;
-function toast(msg) { const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 2200); }
+function toast(msg, action) {
+  const t = $("#toast"); t.textContent = msg; t.classList.toggle("has-action", !!action);
+  if (action) {
+    const b = document.createElement("button"); b.type = "button"; b.textContent = action.label;
+    b.onclick = () => { t.classList.remove("show"); action.fn(); };
+    t.appendChild(b);
+  }
+  t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), action ? 6000 : 2200);
+}
 
 // ---------------------------------------------------------------- Laden
 async function loadStatus() {
@@ -363,9 +393,14 @@ function renderList() {
     row.querySelector("[data-act=edit]").onclick = () => openQty(id);
   });
 }
+async function untick(id) {
+  try { await api(`/api/uncheck/${id}`, { method: "POST" }); await loadList(); toast(tr("restored")); }
+  catch (e) { toast(tr("error", { msg: e.message })); }
+}
 async function tick(id, row) {
+  const title = (state.items.find(i => i.id === id) || {}).title || "";
   row.classList.add("done"); state.pending.add(id);
-  try { await api(`/api/check/${id}`, { method: "POST" }); toast(tr("done")); }
+  try { await api(`/api/check/${id}`, { method: "POST" }); toast(tr("checked", { name: title }), { label: tr("undo"), fn: () => untick(id) }); }
   catch (e) { row.classList.remove("done"); state.pending.delete(id); toast(tr("tick.fail", { msg: e.message })); }
   setTimeout(() => { state.pending.delete(id); loadList(); }, 900);
 }
@@ -376,25 +411,83 @@ const _NUMW = "ein|eine|einen|einem|einer|zwei|zwo|drei|vier|fünf|sechs|sieben|
 const _UNITW = "liter|litern|liters|litre|litres|l|ml|milliliter|g|gramm|gram|grams|kg|kilo|kilos|kilogramm|kilogram|stk|stück|stücke|pcs|pc|pieces|pck|packung|packungen|pack|packs|pkg";
 const QTY_PREFIX_CAP = new RegExp("^((?:[\\d.,]+\\s*[a-zäöü]*)|(?:(?:ein|eine|einen)\\s+)?halb\\w*\\s+(?:" + _UNITW + ")|(?:" + _NUMW + ")(?:\\s+(?:komma|point)\\s+(?:" + _NUMW + "))?(?:\\s+(?:" + _UNITW + "))?)\\s+", "i");
 const QTY_PREFIX = QTY_PREFIX_CAP;
-const input = $("#addInput"), suggest = $("#suggest");
+const input = $("#addInput"), suggest = $("#suggest"), preview = $("#preview");
+function hidePreview() { preview.classList.remove("show"); preview.innerHTML = ""; }
+// Tap on a suggestion only stages it: show it large with section/store, then confirm.
+function stage(name) {
+  const m = input.value.match(QTY_PREFIX_CAP);
+  const text = (m ? m[1] + " " : "") + name;
+  const it = state.stammItems.find(i => i.name === name);
+  const info = [it && sectionName(it.section_id), state.store].filter(Boolean).map(esc).join(" · ");
+  input.value = text; suggest.classList.remove("show");
+  preview.innerHTML = `<div class="pv-main"><b>${esc(text)}</b><small>${info}</small></div>
+    <button type="button" class="pv-x" aria-label="${tr("cancel")}">×</button>
+    <button type="button" class="pv-ok">${tr("preview.add")}</button>`;
+  preview.classList.add("show");
+  preview.querySelector(".pv-ok").onclick = () => { const t = input.value.trim(); hidePreview(); input.value = ""; if (t) submitText(t, true); };
+  preview.querySelector(".pv-x").onclick = () => { hidePreview(); input.focus(); };
+}
 input.addEventListener("input", () => {
+  hidePreview();
   const txt = input.value.trim().toLowerCase().replace(QTY_PREFIX, "");
   if (txt.length < 1) { suggest.classList.remove("show"); return; }
   const hits = state.stammItems.filter(i => i.name.toLowerCase().includes(txt) || (i.aliases || []).some(a => a.toLowerCase().includes(txt))).slice(0, 5);
   if (!hits.length) { suggest.classList.remove("show"); return; }
   suggest.innerHTML = hits.map(i => `<button type="button" data-name="${esc(i.name)}"><span>${esc(i.name)}</span><small>${i.default_qty != null ? fmtQty(i.default_qty) + " " + unitLabel(i.unit) : ""} ${esc(sectionName(i.section_id))}</small></button>`).join("");
   suggest.classList.add("show");
-  suggest.querySelectorAll("button").forEach(b => b.addEventListener("pointerdown", ev => {
-    ev.preventDefault();                       // Fokus bleibt im Feld, kein blur vor dem Tipp
-    const m = input.value.match(QTY_PREFIX_CAP);
-    const text = (m ? m[1] + " " : "") + b.dataset.name;
-    suggest.classList.remove("show"); input.value = "";
-    submitText(text);
-  }));
+  suggest.querySelectorAll("button").forEach(b => {
+    b.addEventListener("pointerdown", ev => ev.preventDefault());   // keep focus; the action happens on release (click)
+    b.addEventListener("click", () => stage(b.dataset.name));
+  });
 });
-input.addEventListener("blur", () => setTimeout(() => suggest.classList.remove("show"), 200));
-async function submitText(text) {
-  try { const t = await api("/api/add", { method: "POST", body: { text, laden: state.store } }); toast(tr("added", { name: t.title })); await loadList(); await loadStamm(); if (t._new_item) askSection(t); }
+input.addEventListener("blur", () => setTimeout(() => suggest.classList.remove("show"), 400));
+
+// Typo check: unknown name that is 1-2 letters away from a known item -> ask first.
+function lev(a, b) {   // edit distance; a swapped pair of letters counts once
+  const d = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array(b.length).fill(0)]);
+  for (let j = 1; j <= b.length; j++) d[0][j] = j;
+  for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++) {
+    d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+  }
+  return d[a.length][b.length];
+}
+function closeMatches(name) {
+  const n = name.toLowerCase().trim();
+  if (n.length < 3) return [];
+  const pairs = state.stammItems.flatMap(i => [i.name, ...(i.aliases || [])].map(x => [x.toLowerCase(), i.name]));
+  if (pairs.some(([x]) => x === n) || state.items.some(i => i.title.toLowerCase() === n)) return [];
+  const max = n.length <= 5 ? 1 : 2, best = new Map();
+  for (const [x, item] of pairs) { const d = lev(n, x); if (d > 0 && d <= max && (!best.has(item) || d < best.get(item))) best.set(item, d); }
+  return [...best].sort((p, q) => p[1] - q[1]).slice(0, 4).map(p => p[0]);
+}
+function askDidYouMean(text, name, cands) {
+  const m = text.match(QTY_PREFIX_CAP), pre = m ? m[1] + " " : "";
+  openSheet(`<h2>${esc(tr("mean.title", { name }))}</h2>
+    <div class="mean">${cands.map(c => `<button data-c="${esc(c)}">${esc(c)}</button>`).join("")}
+    <button class="keep" id="meanKeep">${esc(tr("mean.keep", { name }))}</button>
+    <button class="keep" id="meanCancel">${tr("cancel")}</button></div>`);
+  $(".mean").querySelectorAll("button[data-c]").forEach(b => b.onclick = () => { closeSheet(); submitText(pre + b.dataset.c, true); });
+  $("#meanKeep").onclick = () => { closeSheet(); submitText(text, true); };
+  $("#meanCancel").onclick = () => { closeSheet(); input.value = text; input.focus(); };
+}
+async function undoAdd(t) {
+  try {
+    await api(`/api/undo-add/${t.id}`, { method: "POST", body: { ...t._undo, item_name: t._new_item ? t._item_name : null } });
+    closeSheet(); await loadList(); await loadStamm(); toast(tr("removed", { name: t.title }));
+  } catch (e) { toast(tr("error", { msg: e.message })); }
+}
+async function submitText(text, confirmed = false) {
+  if (!confirmed) {
+    const name = text.replace(QTY_PREFIX, "").trim(), cands = closeMatches(name);
+    if (cands.length) return askDidYouMean(text, name, cands);
+  }
+  try {
+    const t = await api("/api/add", { method: "POST", body: { text, laden: state.store } });
+    const u = t._undo;
+    toast(tr("added", { name: t.title }), u ? { label: tr("undo"), fn: () => undoAdd(t) } : undefined);
+    await loadList(); await loadStamm(); if (t._new_item) askSection(t);
+  }
   catch (err) { toast(tr("error", { msg: err.message })); input.value = text; }
 }
 // Neuer Artikel: Abschnitt gleich zuordnen (Stamm + offener Eintrag)
@@ -418,14 +511,14 @@ function askSection(t) {
 $("#addForm").onsubmit = async e => {
   e.preventDefault();
   const text = input.value.trim(); if (!text) return;
-  input.value = ""; suggest.classList.remove("show");
+  input.value = ""; suggest.classList.remove("show"); hidePreview();
   submitText(text);
 };
 
 // ---------------------------------------------------------------- Katalog
 let catSec = null;
 function openCatalog() {
-  const open = new Set(state.items.map(i => i.title.toLowerCase()));
+  const open = new Set(state.items.map(i => i.title.toLowerCase())), sel = new Set();
   const groups = storeSections().map(sec => ({ sec, items: state.stammItems.filter(i => sectionName(i.section_id) === sec) })).filter(g => g.items.length);
   const rest = state.store ? [] : state.stammItems.filter(i => !i.section_id);
   if (rest.length) groups.push({ sec: tr("no.section"), items: rest });
@@ -439,22 +532,40 @@ function openCatalog() {
     const f = filter.trim().toLowerCase();
     const shown = f ? groups.map(g => ({ sec: g.sec, items: g.items.filter(i => i.name.toLowerCase().includes(f) || (i.aliases || []).some(a => a.toLowerCase().includes(f))) })).filter(g => g.items.length)
                     : groups.filter(g => g.sec === catSec);
-    const chip = i => `<button data-n="${esc(i.name)}" class="${open.has(i.name.toLowerCase()) ? "on" : ""}">${esc(i.name)}${i.default_qty != null ? `<small>${fmtQty(i.default_qty)} ${esc(unitLabel(i.unit))}</small>` : ""}</button>`;
-    $("#catBody").innerHTML = shown.map(g => (f ? `<div class="group">${esc(g.sec)}</div>` : "") + `<div class="chips">${g.items.map(chip).join("")}</div>`).join("") || `<p style="color:var(--mute)">${tr("none.found")}</p>`;
-    $("#catBody").querySelectorAll("button[data-n]").forEach(b => b.onclick = async () => {
+    const chip = i => `<button data-n="${esc(i.name)}" class="pick ${open.has(i.name.toLowerCase()) ? "on" : ""} ${sel.has(i.name) ? "sel" : ""}"><span>${esc(i.name)}</span>${i.default_qty != null ? `<small>${fmtQty(i.default_qty)} ${esc(unitLabel(i.unit))}</small>` : ""}</button>`;
+    $("#catBody").innerHTML = shown.map(g => (f ? `<div class="group">${esc(g.sec)}</div>` : "") + `<div class="chips grid">${g.items.map(chip).join("")}</div>`).join("") || `<p style="color:var(--mute)">${tr("none.found")}</p>`;
+    $("#catBody").querySelectorAll("button[data-n]").forEach(b => b.onclick = () => {
       if (b.classList.contains("on")) return toast(tr("already"));
-      b.classList.add("on");
-      try { const t = await api("/api/add", { method: "POST", body: { text: b.dataset.n, laden: state.store } }); open.add(t.title.toLowerCase()); toast(tr("added", { name: t.title })); loadList(); }
-      catch (e) { b.classList.remove("on"); toast(tr("error", { msg: e.message })); }
+      const n = b.dataset.n;
+      if (sel.has(n)) sel.delete(n); else sel.add(n);
+      b.classList.toggle("sel", sel.has(n));
+      updateBar();
     });
+  };
+  const updateBar = () => {
+    const bar = $("#selBar"); if (!bar) return;
+    bar.querySelector(".names").textContent = sel.size ? [...sel].join(", ") : tr("sel.hint");
+    const btn = bar.querySelector("button"); btn.disabled = !sel.size; btn.textContent = tr("sel.add", { n: sel.size });
+  };
+  const addSelected = async () => {
+    const btn = $("#selBar button"); btn.disabled = true;
+    let added = 0;
+    for (const n of [...sel]) {
+      try { const t = await api("/api/add", { method: "POST", body: { text: n, laden: state.store } }); open.add(t.title.toLowerCase()); sel.delete(n); added++; }
+      catch (e) { toast(tr("error", { msg: e.message })); break; }
+    }
+    render($("#catSearch").value); updateBar();
+    if (added) { toast(tr("n.added", { n: added })); loadList(); }
   };
   openSheet(`<h2>${tr("cat.title")}</h2>
     <input class="cat-search" id="catSearch" placeholder="${tr("search")}" autocomplete="off">
     <div class="cat-tabs" id="catTabs">${groups.map(g => `<button data-s="${esc(g.sec)}" aria-pressed="${g.sec === catSec}">${esc(g.sec)}</button>`).join("")}</div>
-    <div id="catBody"></div>`);
+    <div id="catBody"></div>
+    <div class="selbar" id="selBar"><span class="names"></span><button type="button"></button></div>`);
+  $("#selBar button").onclick = addSelected;
   $("#catTabs").querySelectorAll("button").forEach(b => b.onclick = () => { catSec = b.dataset.s; $("#catSearch").value = ""; $("#catTabs").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); render(); });
   $("#catSearch").oninput = e => render(e.target.value);
-  render();
+  render(); updateBar();
 }
 $("#catBtn").onclick = openCatalog;
 

@@ -43,6 +43,9 @@ const I18N = {
     "user.token": "Token", "user.save": "Token speichern", "user.connected": "Verbunden als {name}", "user.confirmdel": "{name} entfernen?",
     "user.none": "Noch keine Personen angelegt.", "user.missing": "Nicht dabei? Jede Person braucht ein eigenes OpenTodo-Konto und einen API-Token.", "user.addnew": "Neue Person hinzufügen",
     "unit.Stk": "Stk", "unit.Pck": "Pck",
+    "undo": "Rückgängig", "removed": "{name} entfernt", "checked": "{name} erledigt", "restored": "Wieder auf der Liste",
+    "preview.add": "Hinzufügen", "sel.hint": "Artikel antippen, dann hinzufügen", "sel.add": "Hinzufügen ({n})",
+    "mean.title": "„{name}“ ist unbekannt – meintest du:", "mean.keep": "Nein, „{name}“ neu anlegen",
     "setup.warn": "Einrichtung unvollständig: Projekt oder Felder in OpenTodo nicht gefunden (siehe Protokoll des Dienstes).",
   },
   en: {
@@ -86,6 +89,9 @@ const I18N = {
     "user.token": "Token", "user.save": "Save token", "user.connected": "Connected as {name}", "user.confirmdel": "Remove {name}?",
     "user.none": "No people added yet.", "user.missing": "Not listed? Each person needs their own OpenTodo account and an API token.", "user.addnew": "Add new person",
     "unit.Stk": "pcs", "unit.Pck": "pack",
+    "undo": "Undo", "removed": "{name} removed", "checked": "{name} checked off", "restored": "Back on the list",
+    "preview.add": "Add", "sel.hint": "Tap items, then add", "sel.add": "Add ({n})",
+    "mean.title": "“{name}” is unknown – did you mean:", "mean.keep": "No, add “{name}” as new",
     "setup.warn": "Setup incomplete: project or custom fields not found in OpenTodo (see the service log).",
   },
 };

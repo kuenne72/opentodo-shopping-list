@@ -148,6 +148,9 @@ class OpenTodoClient:
         `labels` als Ganzes ersetzt."""
         return self._request("PATCH", f"/api/v1/tasks/{task_id}", json=changes)
 
+    def delete_task(self, task_id: str) -> None:
+        self._request("DELETE", f"/api/v1/tasks/{task_id}")
+
     def complete_task(self, task_id: str, when_ms: int | None = None) -> dict:
         return self.patch_task(task_id, completed_at=when_ms or int(time.time() * 1000))
 
